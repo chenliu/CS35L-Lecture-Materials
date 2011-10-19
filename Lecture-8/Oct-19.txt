@@ -6,250 +6,188 @@
 
 === AGENDA ===========================================
   0 More About Diff File Format
+  1 Introduction to Git
+  2 Introduction to GitHub
+  3 Student Presentation
+  4 Next Lecture
 ======================================================
 
 
-=== Diff and Patch ==================================================
 
------ More About Diff File Fromat-------------------------------
+== More About Diff File Format =======================
 
-  -- What is diff? --
-  diff - compare files line by line
+  -- An Anatonomy of Unified File Format --
 
-  diff helps you to find the difference between
-  two files.
-    - Source code versioning
-    - Compare similar files
-    - Extract useful information
+    diff -p -u -r1.134 rm.c
+    --- src/rm.c    14 May 2005 07:58:37 -0000
+    +++ src/rm.c    29 Aug 2005 21:11:54 -0000
+    @@ -51,7 +51,9 @@
+     #include "system.h"
+     #include "dirname.h"
+     #include "error.h"
+    +#include "lstat.h"
+     #include "quote.h"
+    +#include "quotearg.h"
+     #include "remove.h"
+     #include "root-dev-ino.h"
 
-  -- Basic Output Format --
+    @@ -95,6 +97,33 @@ static struct option const long_opts[] =
+    Line 1: the diff command create this file
+    Line 2,3: file names and time stamps
+    Line 4: Range of file
+      * -/+ indicates from/to file
+      * first number indicates starting line of hunk
+      * second number indicates the length of hunk
+    Starting from line 5 until next "@@":
+      the content of hunk
 
-    diff <from-file> <to-file>
+  -- Hints when modifying diff file --
+    * Don't change the file names
+    * Make sure the line numbers are correct
+    * Make minimal change as possible
 
-    The normal output format consists of one or more hunks of differences;
-  each hunk shows one area where the files differ. Normal format hunks
-  look like this:
+======================================================
 
-    CHANGE-COMMAND
-    < FROM-FILE-LINE
-    < FROM-FILE-LINE
-    ---
-    > TO-FILE-LINE
-    > TO-FILE-LINE
 
-  There are 3 different change-commands:
-  * FaT
-    Add the lines in range T of to-file after line F of from-file
-  * FcT
-    Replace the lines in range F of from-file with lines in range T of to-file
-  * FdT
-    Delete the lines in range F, and T is the where they would have
-    appeared had they not been deleted.
+== Introduction to Git ===============================
 
-  -- Unified Output Format --
+  -- Taxonomy of Version Control Systems --
 
-      diff -u <from-file> <to-file>
-  
-    ~~ Header ~~
+    * Local Version Control Systems
+      Local database keeps tracks of history of files.
+      e.g. Revision history of Google docs
 
-      The unified output format starts with a two-line header, which
-    looks like this:
+    * Centralized Version Control Systems
+      Put all the files on central server and clients
+      sync with the server.
+      e.g. Subversion, CVS
 
-      --- FROM-FILE FROM-FILE-MOD-TIME
-      +++ TO-FILE TO-FILE-MOD-TIME
+    * Distributed Version Control Systems
+      Clients don't just check out latest snapshot, but
+      fully mirror the repository.
+      e.g. Git, Mercurial, Bazaars etc.
 
-    ~~ Hunks ~~
 
-      Each hunk of unified output format shows one area where the files
-    differ. Unified format hunks look like this:
+  -- History of Git --
+    * Linux kernel developmentn requires a DVCS
+    * BitKeeper, a commercial software
+    * Linus Torvalds decide to build a free version
+    * Git is born in 2005
 
-      @@ FROM-FILE-RANGE TO-FILE-RANGE @@
-       LINE-FROM-BOTH-FILE
-       LINE-FROM-BOTH-FILE
-      
-      The lines is preceeded by following prefixes:
-      ' ' indicates the line is common to both files
-      '+' indicates the line is added here to the from-file
-      '-' indicates the line is removed here from the from-file
 
-    Unified output format is widely used in GNU patches.
+  -- Three States of Git --
 
-  -- Diff Multiple files --
+    working  | staging | repository
+         <----------Checkout--
+       ---Stage-->
+                  ---Commit-->
 
-      diff <from-folder> <to-folder>
 
-    diff will autodetect the input is a file or a directory. And diff
-  each files in the directory
-  
-    If you want to diff into subdirectories recursively, you may want to
-  use:
-      diff -r <from-folder> <to-folder>
+  -- Basic Workflow --
+    * Change the files in working directory
+    * Stage the changed files
+    * Do a commit into repository
 
----------------------------------------------------------------------
 
 
------ Introduction to Patch -----------------------------------------
+-- Git Cheat Sheet -----------------------------------
 
-  -- What is patch? --
+  -- Install Git --
+    * apt-get install git-core
 
-    patch - apply a diff file to an original
+  -- Setup Git --
+    $ git config --global user.name "John Doe"
+    $ git config --global user.email johndoe@example.com
+    $ git config --global core.editor emacs
+    $ git config --global merge.tool vimdiff
 
-  -- Run patch --
+    $ git config --list
 
-    patch [options] [originalfile [patchfile]]
+  -- Initialize a repository --
+      # Go to the project's directory
+    $ git init
+      # Add files (stage them) --
+    $ git add *.c
+    $ git add README
+      # Commit the changes
+    $ git commit -m 'Initial project checkin'
 
-  We often use this line:
-    patch -pNUM < patchfile
+  -- Clone an existing repository --
+    $ git clone <git-address>
 
-  -- patch is error tolerant --
+  -- Checking status --
+    $ git status
 
-    * Detect the diff file content intelligently
-    * Remove leading junk information
-    * Remove tailing junk information
-    * Correct the line numbers
-    * Automatic detect the filenames given input
+  -- Committing all changed files (skip staging) --
+    $ git commit -a -m "first commit"
 
-  -- -p option --
+  -- Revert your changes --
+    $ git reset --hard
 
-    -p option give patch the clue to figure out what is the filename to
-  patch on by indicating the number of "slashes" to ignore in the
-  filenames
+  -- View changes --
+    $ git diff <file>
 
-  e.g. a patch may include the following filename:
-    /home/tom/software/abctool/src/abc.c
+  -- Add a remote repository --
+    $ git remote add <remotename> <git-addr>
 
-  And Jim actually want to apply this patch to his own folder at:
-    /home/jim/tools/abctool/src/abc.c
+  -- Push to a remote repository --
+    $ git push <remotename>
 
-  patch -p4 will match the following filenames from working directory:
-    abctool/src/abc.c
-  
-    Please use -p option in your patch, since there may be a lot of
-  ambiguity in code files management.
+  -- Update from a remote repository --
+    $ git pull
+-------------------------------------------------------
 
-  -- Reverse an applied patch --
-  
-    patch pNUM -R < patchfile
+-- Git Branch -----------------------------------------
 
----------------------------------------------------------------------
+  -- Create a branch --
+    $ git branch iss53 # create a branch issue 53
 
-=====================================================================
+  -- Check out a branch --
+    $ git checkout -b iss53 # checkout a new branch issue 53
 
+  After commit, your branch will have a new snapshot
 
-=== Lab 4 Getting Started ===========================================
+  -- Merge branches --
+    $ git chekcout master
+    $ git merge iss53 # merge iss53 with master branch
 
-  1) Grab You package
-    wget ftp://alpha.gnu.org/gnu/coreutils/coreutils-8.0.tar.gz
-    tar -xzvf coreutils-8.0.tar.gz
+  -- See last commit of each branch --
+    $ git branch -v
 
-    Here you go with a folder called coreutils-8.0
+-------------------------------------------------------
 
-  2) Create Patch
-    Copy and paste the patch from email archive to your own patch file
+More information, see http://progit.org/book/
 
-  3) Try the patch
-    Try the patch using the command we introduced in today's lecture
-  and analysis the errors. (Log them!)
+=======================================================
 
-  4) Figure out the correct patch
-    You need a "correct" patch, please note the difference between
-  version 8.0 to the version of the original patch. Edit the patch using
-  your favourite editors
 
-  5) Patch and fix
+== INTRODUCTION TO GITHUB =============================
 
-  6) Generate your own patch using diff
+  -- Setting up GitHub --
+  http://help.github.com/linux-set-up-git/
 
-=====================================================================
+  -- SSH Pub Keys --
+    In order to use GitHub on your machine, you need update
+  Your SSH key to GitHub.
 
+    -- Generate an SSH Key --
+    $ ssh-keygen -t rsa -C <your-email>
+    <Press Enter three times>
 
-=== Version Control System ==========================================
+    -- Upload to Git --
+    Account Settings > SSH Public Keys > Add another pub key
 
---- Introduction to Version Control ---------------------------------
+    -- Test connection --
+    ssh -T git@github.com
 
-  -- What is version control? --
-    Versioning is the process of assigning either unique version names
-  or unique version numbers to unique states of computer software.
+  -- Create new repository --
+  http://help.github.com/create-a-repo/
 
-  -- Version Control --
-    In software development, usually a team of people may change the
-  same files. It is important to keep track of every changes made by
-  team members and to guarantee that each individual change will not
-  break or badly affect the entire system.
+=======================================================
 
-  -- Version Control System --
-    A system enables users to manage the different states of a software
-  throughout the development cycle. Usually, it provides the following
-  functionality:
-    * Check out source code. Sync changes
-    * Check in changes
-    * Diff, merge and confliction handling
-    * Branching
 
-  -- Some terminology --
-    
-    Project - A collection of files saved in the version control system
-    Repository - The location where the project files is stored
-    Revision - A certain version of a file
-    Branch - A fork of the project
----------------------------------------------------------------------
-
-
---- Operations on Version Control Systems ---------------------------
-
-    Sync, Update - update local files to the latest version
-
-    Commit - Submit local edits to the project
-
-    Diff - compare local files to the latest (or any) version in the
-      repository
-
-    Conflict - The situation that local files are not compatible to the
-      version in repository, which may prevent sync/commit. A typical 
-      reason is that the local version is modified content edited by
-      other users simultaneously.
-
-    Merge - The process of merging local changes with changes done by
-      others.
-
-    Revert - Abandon local changes and revert to latest version in
-      repository
-
-    Add - To add a file to the project
-
-    Remove - To remove a file from the project
-
----------------------------------------------------------------------
-
-
---- Typical Version Control Systems ---------------------------------
-
-  -- Subversion --
-    Subversion is a open-source source control system and widely used in
-  many other open-source projects. A repository is create on an SVN
-  "server" and you can use SVN clients to connect to it and make
-  editions.
-
-  -- Git --
-    Git is an open-source source control system and get popular among
-  individual developers but also large corporations. Git is a
-  decentralized source control system, which provides much more
-  flexibility and increases the efficiency of version controlling.
-
-  -- Microsoft Team Foundation Server --
-    Offering source control with data collection, reporting and project
-  tracking. Three-tier architecture: client tier, the application tier
-  and the data tier. It is part of Visual Studio Team System.
-
----------------------------------------------------------------------
-
-=====================================================================
-
-
-=== Next Lecture ====================================================
-
-  1 Introduction to Git
-  2 Git Operations
-  3 Host on Github
-
-=====================================================================
+== Next Lecture =======================================
+  1 Introduction to C
+  2 C compilation and linking process
+  3 Debugging with C
+=======================================================
