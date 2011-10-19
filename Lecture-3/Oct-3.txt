@@ -1,0 +1,401 @@
+-------------------------------------------------
+|     CS 35L SOFTWARE CONSTRUCTION LAB          |
+|        COMMANDS AND BASIC SCRIPTING           |
+|           October 3, 2011                     |
+-------------------------------------------------
+
+
+== About your first assignment =================
+
+  - Homework solutions will NOT be provided
+  - Grading will take one or two weeks or more
+  - After grade is published, you are welcome to
+    challenge the grader if you feel your assignment
+    is graded improperly
+
+=================================================
+
+
+
+====AGENDA=======================================
+  0 REVIEW OF LAST WEEK 
+  1 INTRODUCTION TO LINUX SHELL AND SCRIPT
+  2 BASIC SHELL SCRIPTING
+  3 TEXT HANDLING AND REGULAR EXPRESSION 
+  4 SETTING UP LAB 2
+  5 TOPIC OF NEXT LECTURE
+=================================================
+
+
+
+==Review of Last Week============================
+  - Basic Linux Commands
+  - Linux File System
+    - Hierarchy
+    - Permission
+    - Everything is a file
+    - Link
+  - VIM and Emacs
+=================================================
+
+
+
+==SHELL AND THE SCRIPT===========================
+
+-- What is a Shell ? ----------------------------
+
+  A Unix shell is a command-line interpreter provides
+  a traditional user interface for the Unix OS.
+
+  User run programs by typing commands into shell.
+
+  Typical shell program in Unix:
+   - Bourne Shell         /bin/sh
+   - C Shell              csh (not shipped with Ubuntu)
+   - Bourne-Again Shell   /bin/bash
+--------------------------------------------------
+
+-- Script Language -------------------------------
+
+  Script Language
+    - Interpreted language
+    - Interpreter reads script, translates it into
+      internal form, and execute programs
+
+  Script Languages vs Compiled Languages
+    - High level vs Low level
+    - Compiled language is efficient but more
+      complex to develop
+
+  Why Use a Shell Script?
+    - Simplicity
+    - Portability
+    - Ease of development
+
+  Typical Usage for Shell Scripts
+    - Automate frequent tasks
+    - Simple text file manipulation
+    - System admin tasks
+-------------------------------------------------
+
+--An Example of Shell Script---------------------
+
+  Objective: Count the number of files in current
+             working directory
+
+  $ vim nfiles.sh           write to file
+  ls | wc -l                type and save quit
+  $ chmod +x nfiles.sh      make it excutable
+  $ ./nfiles.sh             run it!
+
+  Use the shell script interpreter to run
+  $ sh nfiles.sh
+
+-------------------------------------------------
+
+--How does Shell Script works?-------------------
+
+  Shell Script read one -piece- of code each time:
+    - Built-in command
+    - Shell functions
+    - External command
+      Parent Shell ----wait child to finish---->Parent
+          |                                       ^
+          ----> Child Shell ---> New Program------|
+
+  Running in the background
+    - & at the end of the command/line of code
+    - Shell doesn't wait for the command to finish
+      if the program is running in the background.
+
+-------------------------------------------------
+
+=================================================
+
+
+
+== BASIC SHELL SCRIPTING ========================
+
+--The #! First Line------------------------------
+
+  Shebang line tells the system to use which 
+  interpreter to interpret and execute the code.
+
+  Examples:
+  #! /bin/sh
+  #! /usr/bin/python
+
+  Executable without shebang line
+    - System first try to run it as compiled
+    - "File is not runnable" error
+    - Retreat to /bin/sh
+
+  Why bother adding shebang line?
+    - Makes shell scripts more like real excutables
+    - 'ps' display real name instead of 'sh'
+    - Can be set-user-id
+    - Simpler to have alternative shells (e.g. csh)
+-------------------------------------------------- 
+
+--Variables---------------------------------------
+
+  Naming
+    - Start with letter/underscore
+    - Follow with letters/digits/underscores
+
+  Reference
+    first_name = Chen
+    given_name = $first_name
+    last_name = Liu
+    full_name = "$first_name $last_name"
+
+  Variables hold string values
+
+---------------------------------------------------
+
+--Arguments----------------------------------------
+
+  Reference the arguments with $1, $2, ...
+
+  first_name = $1
+  echo first_name
+
+---------------------------------------------------
+    
+--Print--------------------------------------------
+
+  echo
+    - print the string following 'echo'
+    - no extra options
+    - Ex:
+        $ echo Hello, world
+        Hello, world
+
+  printf
+    - printf format-string [args...]
+    - Ex:
+        $ printf "Hello, world\n"
+        Hello, world
+        $ printf "%s, %s\n" Hello world
+        Hello, world
+----------------------------------------------------
+
+--Execution Tracing---------------------------------
+  sh -x tells shell to print executing command, and
+        precede it with "+"
+
+  Example:
+  $ sh -x nfiles.sh
+  + wc -l
+  + ls
+  3
+
+  in the script
+  set -x        turn on execution tracing
+  set +x        turn off execution tracing
+----------------------------------------------------
+
+====================================================
+
+
+== TEXT HANDLING AND REGULAR EXPRESSION ============
+
+--Text Handling-------------------------------------
+   - Shell command manipulate on text
+   - Variables are strings
+   - Input/Output are read as text
+
+   Recall the Unix tooling philosophy introduced in
+   previous lecture.
+----------------------------------------------------
+
+
+--Search for text-----------------------------------
+
+  Print lines matching a pattern
+    - grep: Uses basic regular expressions (BRE)
+    - egrep: Use extended regular expressions (ERE)
+             same as grep -E
+    - fgrep: Fast grep matches fixed strings
+             same as grep -F
+
+  Grep with pipeline
+    - ls | grep py
+    - compare to find . -name *py
+    - ls -l | grep 2010/09/
+    - how to make a equivalent command with find?
+  
+  Grep with I/O redirection
+    - grep 'UCLA' < lakers_roster.txt
+----------------------------------------------------
+
+
+--Regular Expressions-------------------------------
+
+  A regular expression provides a concise and flexible
+  means for "matching".
+
+  --Anchors--
+   * Refer to the start and end of text units
+   * ^   start of line
+     $   end of line
+
+  --Character Classes--
+   \s    white space
+   \S    NOT white space
+   \d    digit
+   .     any character except new line (\n)
+
+  --Special Characters--
+  \      Escape Character (\* to match real '*')
+  \n     new line
+  \r     carriage return
+  \t     tab
+
+  --Quantifiers--
+   *     0 or more
+   +     1 or more
+   ?     0 or 1
+   {3}   exactly 3
+   {3,5} 3, 4 or 5
+   
+  Non-greedy quantifier is not supported in POSIX/GNU
+  Use perl regexp instead by -P
+  greedy:         grep 'e.*o'
+  non-greedy:     grep -P 'e.*?o'
+
+
+  --POSIX Character Classes--
+
+  [:upper:]       upper case letters
+  [:alpha:]       all letters
+  [:punct:]       punctuation
+  [:word:]        digits, letters and underscore
+
+  
+  To know more regexp, try search it on web
+  e.g. google 'regexp python newline'
+
+----------------------------------------------------
+
+
+--Shell Pattern vs RE-------------------------------
+
+  Shell use 'Shell Pattern' to match file names
+
+  *  match any characters
+  ?  match any single character
+  [abcd] match any characters within the bracket
+
+  find -name '?'           correct
+  man -k '?'               wrong
+  find -regexp '?'         wrong
+
+  Most programs support regular expression, while some
+  programs support shell pattern. To find the exact
+  usage, please read the man page of the program.
+
+----------------------------------------------------
+
+
+--A Bit of History About grep----------------------
+
+  ed - a line-oriented text editor
+
+  A family tree
+  qed (UC Berkeley) -> ed (Ken Thompson)
+    -> ex -> vi
+    -> sed -> awk -> Perl
+
+  ed is one of the first programs implementing 
+  regular expression.
+
+  grep = g/re/p  global regular expression print
+
+  sed - search and replace tool
+    sed 's/yourword/anotherword/g' yourfile
+
+  search replace in vi/vim:
+  %s/sleep/hack/g
+
+----------------------------------------------------
+
+
+--Other Text Processing Tools-----------------------
+
+  sort: sorts text
+  wc:   output word count report (lines, words, chars)
+  head: output first lines of a file
+  tail: output last lines of a file
+  tr:   transliterate files with a pattern
+
+  Read the man page of the above tools to know their
+  full functionality.
+
+----------------------------------------------------
+
+====================================================
+
+
+==SETTING UP FOR LAB2===============================
+
+-- Copy files --------------------------------------
+
+   scp you@lnxsrv.seas.ucla.edu:/usr/share/dict/words ./
+   password:
+
+   use wget to download web pages
+
+----------------------------------------------------
+
+
+-- tr command --------------------------------------
+
+   use man to get an understanding about its full
+   usage.
+
+   www.examplenow.com/tr/
+
+----------------------------------------------------
+
+-- Lab Assignment ----------------------------------
+
+  Requirement for lab2.txt:
+  1) Follow the format spec
+  2) Record your typing, what you did, and what happened
+     - Your solution to the problem.
+     - Reproducable steps.
+     - Explaination of your solution.
+
+  Read the man page for new commands.
+
+  Do not repair by hand.
+
+  Record your bugs.
+
+-----------------------------------------------------
+
+-- Homework Assignment ------------------------------
+  
+  Familiarize with your tools first
+    - hint: cmp, ln, test
+
+  Try to do it in shell first, then script it.
+
+  Start from simple case to extreme cases
+    -> two identical files
+    -> three identical files (name preference)
+    -> two groups of indentical files
+    -> special file names
+ ----------------------------------------------------- 
+
+=======================================================
+
+
+== TOPIC OF NEXT LECTURE ==============================
+
+  - Control your shell scrip(loops, if..else, etc.)
+  - Function call in Shell scripts
+  - Regular Expression in VIM and Emacs
+
+=======================================================

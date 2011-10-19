@@ -1,0 +1,356 @@
+-------------------------------------------------
+|     CS 35L SOFTWARE CONSTRUCTION LAB          |
+|        COMMANDS AND BASIC SCRIPTING (2)       |
+|           October 5, 2011                     |
+-------------------------------------------------
+
+=== AGENDA ======================================
+  1 MORE ABOUT REGULAR EXPRESSION
+    1.1 POSIX regular expression
+    1.2 Regular expression examples
+    1.3 Regular expressions in VIM/Emacs
+  2 MORE SHELL SCRIPTING
+    2.1 Variables 
+    2.2 Making decisions
+    2.3 Loops
+    2.4 String Manipulation
+    2.5 Quoting and evaluation
+=================================================
+
+
+== More About Regular Expression ================
+
+-- POSIX Regular Expression ---------------------
+
+  Regular Expressions are widely used in many 
+  different tools. When you are using tools such as
+  grep, you should follow the POSIX standard.
+
+  BRE - Basic Regular Expression
+  ERE - Extended Regular Expression
+
+  POSIX Metacharacters Tables
+  Chracter  BRE/ERE         Meaning in Pattern
+    \        Both       Turn off metacharacters, turn
+                        on special usage.
+                        Ex: \* matches real '*'
+                            \{ indicates interval expr
+
+    .        Both       Any characters except '\n'
+
+    *        Both       0 or more occurrence of previous
+                        chracter or subpattern
+
+    ^        Both       Anchor: start of line
+
+    $        Both       Anchor: end of line
+
+  [  ]       Both       Match any chracters within the bracket 
+
+  [^ ]       Both       Match any chracters  but chracters
+                        within the bracket
+
+  (n,m)      ERE        Define a subpattern.
+  \(n,m\)    /BRE       \n can be used to refer to n-th subpattern
+                        \n is BRE-only
+
+  {n,m}      ERE        Match number of occurrences of preceded
+  \{n, m\}   /BRE       character or subpattern
+  
+    ?        ERE        Matches the preceded character or subpattern
+                        zero or one time.
+
+    +        ERE        Matches the preceded character or subpattern
+                        one or more times
+
+    |        ERE        Match patterns from expression on either side
+
+---------------------------------------------------------------------
+
+
+
+-- Regular Expressions Examples -------------------------------------
+
+  [[:alpha:]_][[:alnum:]]*                            vairable name
+  [[:digit:]]\{3\}-[[:digit:]]\{3\}-[[:digit:]]\{4\}  phone number 
+  [[:alnum:]_]*\(\.[[:alnum:]]*\)\{0,1\}@[[:alnum:]-_]*\.[[alnum:]]*\(.[[alnum:]]*\)*
+
+---------------------------------------------------------------------
+
+-- Basic Usage of sed ----------------------------------------------
+
+  Search a pattern and replace.
+  sed 's/pattern/replace/'
+
+  Examples:
+
+  - Print all the players numbers, sort by number
+  sed 's/\t.*//' lakers_roster.txt | sort -n
+
+  - Print all the players names only
+  sed 's/^[[:alnum:]-]*\t//' lakers_roster.txt \
+   | sed 's/\t.*//' | sed 's/PLAYER/Names/' | less
+
+  - Create the subdirectory hierarchies as the given directory
+  find /home/ubuntu -type d -print |
+      sed 's;/home/ubuntu/;/home/ubuntu/test2/;' |
+        sed 's/^/mkdir /' |
+         sh -x
+
+--------------------------------------------------------------------
+
+-- Regular Expression in Vim ---------------------------------------
+
+  Similar grammar as ed and sed.
+
+  Search/Replace
+
+  :%s/pattern/string/cgiI
+
+  % - file scope, you can choose other scopes
+
+  Some differences:
+  Chracter classes
+  Quantifiers
+  \{-} - non-greedy matches more or more patterns
+
+  http://vimregex.com/
+----------------------------------------------------------------------
+
+-- Regular Expression in Emacs ---------------------------------------
+  
+   Grammar is similar to vim, with exception e.g. syntax group.
+
+   Some Emacs Commands that use regexp
+   C-M-s           incremental forward search matching
+   C-M-r           incremental backward search matching
+   C-x query-replace-regexp    query and replace
+   C-x grep        call grep and put result in a buffer
+
+-----------------------------------------------------------------------
+
+=====================================================
+
+
+== More Shell Scripting =============================
+
+-- Variables Revisited ------------------------------
+
+  Arguments
+   - $n   n-th argument, ${n} for n >= 10
+   - $*   all argument as one string, "arg1 arg2 arg3"
+   - $@   all argument as separated strings, "arg1" "arg2" "arg3"
+   
+  Traverse the arguments 
+   for i in $*
+   > do echo i is $i
+   > done
+
+  Arithmetic
+    - Variables are stored as string, but it will expand
+      to numerics with arithmetic operators within $((...))
+
+    i=1
+    echo $i++
+    echo $((i++)) $i
+    1 2
+    echo $((++i)) $i
+    3 3
+
+  --Environment--
+  export $variable
+   - Put the variable into the environment
+  env $variable
+   - Temporarily change the environment variable
+  unset $variable
+   - Remove variable from current shell
+
+------------------------------------------------------
+
+-- Making Decisions-----------------------------------
+
+  -- Exit Code --
+  exit [exit-value]
+  
+  The default exit status used if none is supllied is the
+  exit status of last command executed.
+
+  0       Command exited successfully
+  >0      Command failed
+  1-125   Command exited unsuccessfully
+  126     Command found, but file was not executable
+  127     Command not found
+  >128    Command died due to receiving a signal (e.g. ^C)
+
+
+  -- Make decisions based on exit code --
+  if pipeline1
+  then
+     statements-if-true-1
+  elif pipeline
+     statements-if-true-2
+  else
+     statements-if-all-fails
+  fi
+
+  -- The test command --
+  if test "$str1" = "$str2"
+  then
+     ...
+  fi
+
+  if test $1 -eq $2
+  then
+     printf "%d equals to %d\n" $1 $2
+  fi
+
+  numeric test is integer only
+
+-------------------------------------------------------
+
+
+-- Case statement -------------------------------------
+
+  case $1 in
+   -f)
+      ...
+   -d | --dierectory)
+      ...
+   *)
+      echo $1: unknown option
+      exit 1
+  esac
+
+-------------------------------------------------------
+
+
+-- Loops ----------------------------------------------
+
+  -- for loop --
+
+  Make a copy of every *.txt file, and modify the original
+  version by replaceing 'A' with '-A-'.
+
+  for i in *.txt
+  do
+      echo $i
+      mv $i $i.old
+      sed 's/A/-A-/g' < $i.old > $i
+  done
+
+  -- while loop --
+
+  while condition
+  do
+      statements
+  done
+
+  until condition
+  do
+      statements
+  done
+
+  break / continue works the same as in c+++
+
+---------------------------------------------------
+
+
+-- Function ---------------------------------------
+
+  define a function:
+  
+  wait_for_user() {
+      until who | grep "$1" > /dev/null
+      do
+           sleep ${2:-30}
+      done
+      return 0
+  }
+
+  What will the following commands do?
+
+  wait_for_user chenliu 20
+  wait_for_user chenliu
+
+  Example: word count for all the files:
+  mywc() {
+    echo "Number of words in $1"
+    wc -w < $1
+  }
+  for f in "$@"
+  do
+       mywc "$f"
+  done
+
+------------------------------------------------------- 
+
+
+-- String Manipulation --------------------------------
+
+  -- Pattern Matching Operators --
+  ${variable#pattern}
+    - delete the shortest match of pattern from beginning
+      and return the rest
+
+  ${variable##pattern}
+    - delete the longest match of pattern from beginning
+      and return the rest
+
+  ${variable%pattern}
+    - delete the shortest match of pattern from the end
+      and return the rest
+
+  ${variable%%pattern}
+    - delete the longest match of pattern from the end
+      and return the rest
+
+  NOTE: use the shell pattern instead of regexp
+
+  -- Substring Operators --
+  ${string:position}
+    - returns the substring from $string at $position
+
+  ${string:position:length}
+    - returns the substring from $string at $position with
+      length $length
+
+  -- Length of String --
+  ${#string}
+    - returns the length of string $string
+
+--------------------------------------------------------------
+
+
+-- Quoting and Evaluation ------------------------------------
+
+  Backslash escaping
+   - escape the metachracters
+
+  Single quotes
+   - treat everything inside the isngle quotes as literature
+
+  Double quotes
+   - group enclosed text as a single string
+
+  eval
+   - run the arguments through a command-line processing steps
+     all over again
+   - Example:
+       listpage="ls | less"
+       $listpage       #wrong! | and less are passed as arguments
+       eval $listpage  #correct! equivalent to "ls | less"
+---------------------------------------------------------------
+
+=============================================================
+
+
+== REVIEW OF THIS WEEK =====================================
+
+ 1 BASIC SHELL KNOWLEDGE
+ 2 SCRIPT LANGUAGE
+ 3 TEXT PROCESSING TOOLS
+ 4 REGULAR EXPRESSIONS
+ 5 BASIC SHELL SCRIPTING
+
+============================================================
+

@@ -1,0 +1,19 @@
+NUM	PLAYER	POS	FROM
+15	Ron Artest	F	St.John's
+9	Matt Barnes	F	UCLA
+5	Steve Blake	G	Maryland
+12	Shannon Brown	G	Michigan State
+24	Kobe Bryant	G	Lower Merlon HS (PA)
+17	Andrew Bynum	C	St. Joseph HS (NJ)
+45	Derrick Caracter	F	Texas-El Paso
+3	Devin Ebanks	F	West Virginia
+2	Derek Fisher	G	Arkansas-Little Rock
+16	Pau Gasol	F-C	Barcelona, Spain
+-	Andrew Goudelock	G	Charleston (SC)
+10	Trey Johnson	G-F	Jackson State
+-	Ater Majok	F	Connecticut
+-	Darlus Morris	G	Michigan
+7	Lamar Odom	F	Rhode Island
+50	Theo Ratliff	C	Wyoming
+1	Joe Smith	F-C	Maryland
+4	Luke Walton	F	Arizona

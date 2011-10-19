@@ -1,0 +1,263 @@
+          -------------------------------------------------
+          |     CS 35L SOFTWARE CONSTRUCTION LAB          |
+          |   Change Management and Version Control       |
+          |           October 17, 2011                    |
+          -------------------------------------------------
+
+=== AGENDA ==========================================================
+  1 Diff and Patch
+    1.1 Introduction to diff
+    1.2 Introduction to patch
+  2 Lab 4 Getting Started
+  3 Version Control System
+    3.1 Motivation of version control system
+    3.2 Operations of version control system
+    3.3 Typical version control systems
+  4 Schedule of next lecture
+=====================================================================
+
+
+=== Diff and Patch ==================================================
+
+----- Introduction to Diff ------------------------------------------
+
+  -- What is diff? --
+  diff - compare files line by line
+
+  diff helps you to find the difference between
+  two files.
+    - Source code versioning
+    - Compare similar files
+    - Extract useful information
+
+  -- Basic Output Format --
+
+    diff <from-file> <to-file>
+
+    The normal output format consists of one or more hunks of differences;
+  each hunk shows one area where the files differ. Normal format hunks
+  look like this:
+
+    CHANGE-COMMAND
+    < FROM-FILE-LINE
+    < FROM-FILE-LINE
+    ---
+    > TO-FILE-LINE
+    > TO-FILE-LINE
+
+  There are 3 different change-commands:
+  * FaT
+    Add the lines in range T of to-file after line F of from-file
+  * FcT
+    Replace the lines in range F of from-file with lines in range T of to-file
+  * FdT
+    Delete the lines in range F, and T is the where they would have
+    appeared had they not been deleted.
+
+  -- Unified Output Format --
+
+      diff -u <from-file> <to-file>
+  
+    ~~ Header ~~
+
+      The unified output format starts with a two-line header, which
+    looks like this:
+
+      --- FROM-FILE FROM-FILE-MOD-TIME
+      +++ TO-FILE TO-FILE-MOD-TIME
+
+    ~~ Hunks ~~
+
+      Each hunk of unified output format shows one area where the files
+    differ. Unified format hunks look like this:
+
+      @@ FROM-FILE-RANGE TO-FILE-RANGE @@
+       LINE-FROM-BOTH-FILE
+       LINE-FROM-BOTH-FILE
+      
+      The lines is preceeded by following prefixes:
+      ' ' indicates the line is common to both files
+      '+' indicates the line is added here to the from-file
+      '-' indicates the line is removed here from the from-file
+
+    Unified output format is widely used in GNU patches.
+
+  -- Diff Multiple files --
+
+      diff <from-folder> <to-folder>
+
+    diff will autodetect the input is a file or a directory. And diff
+  each files in the directory
+  
+    If you want to diff into subdirectories recursively, you may want to
+  use:
+      diff -r <from-folder> <to-folder>
+
+---------------------------------------------------------------------
+
+
+----- Introduction to Patch -----------------------------------------
+
+  -- What is patch? --
+
+    patch - apply a diff file to an original
+
+  -- Run patch --
+
+    patch [options] [originalfile [patchfile]]
+
+  We often use this line:
+    patch -pNUM < patchfile
+
+  -- patch is error tolerant --
+
+    * Detect the diff file content intelligently
+    * Remove leading junk information
+    * Remove tailing junk information
+    * Correct the line numbers
+    * Automatic detect the filenames given input
+
+  -- -p option --
+
+    -p option give patch the clue to figure out what is the filename to
+  patch on by indicating the number of "slashes" to ignore in the
+  filenames
+
+  e.g. a patch may include the following filename:
+    /home/tom/software/abctool/src/abc.c
+
+  And Jim actually want to apply this patch to his own folder at:
+    /home/jim/tools/abctool/src/abc.c
+
+  patch -p4 will match the following filenames from working directory:
+    abctool/src/abc.c
+  
+    Please use -p option in your patch, since there may be a lot of
+  ambiguity in code files management.
+
+  -- Reverse an applied patch --
+  
+    patch pNUM -R < patchfile
+
+---------------------------------------------------------------------
+
+=====================================================================
+
+
+=== Lab 4 Getting Started ===========================================
+
+  1) Grab You package
+    wget ftp://alpha.gnu.org/gnu/coreutils/coreutils-8.0.tar.gz
+    tar -xzvf coreutils-8.0.tar.gz
+
+    Here you go with a folder called coreutils-8.0
+
+  2) Create Patch
+    Copy and paste the patch from email archive to your own patch file
+
+  3) Try the patch
+    Try the patch using the command we introduced in today's lecture
+  and analysis the errors. (Log them!)
+
+  4) Figure out the correct patch
+    You need a "correct" patch, please note the difference between
+  version 8.0 to the version of the original patch. Edit the patch using
+  your favourite editors
+
+  5) Patch and fix
+
+  6) Generate your own patch using diff
+
+=====================================================================
+
+
+=== Version Control System ==========================================
+
+--- Introduction to Version Control ---------------------------------
+
+  -- What is version control? --
+    Versioning is the process of assigning either unique version names
+  or unique version numbers to unique states of computer software.
+
+  -- Version Control --
+    In software development, usually a team of people may change the
+  same files. It is important to keep track of every changes made by
+  team members and to guarantee that each individual change will not
+  break or badly affect the entire system.
+
+  -- Version Control System --
+    A system enables users to manage the different states of a software
+  throughout the development cycle. Usually, it provides the following
+  functionality:
+    * Check out source code. Sync changes
+    * Check in changes
+    * Diff, merge and confliction handling
+    * Branching
+
+  -- Some terminology --
+    
+    Project - A collection of files saved in the version control system
+    Repository - The location where the project files is stored
+    Revision - A certain version of a file
+    Branch - A fork of the project
+---------------------------------------------------------------------
+
+
+--- Operations on Version Control Systems ---------------------------
+
+    Sync, Update - update local files to the latest version
+
+    Commit - Submit local edits to the project
+
+    Diff - compare local files to the latest (or any) version in the
+      repository
+
+    Conflict - The situation that local files are not compatible to the
+      version in repository, which may prevent sync/commit. A typical 
+      reason is that the local version is modified content edited by
+      other users simultaneously.
+
+    Merge - The process of merging local changes with changes done by
+      others.
+
+    Revert - Abandon local changes and revert to latest version in
+      repository
+
+    Add - To add a file to the project
+
+    Remove - To remove a file from the project
+
+---------------------------------------------------------------------
+
+
+--- Typical Version Control Systems ---------------------------------
+
+  -- Subversion --
+    Subversion is a open-source source control system and widely used in
+  many other open-source projects. A repository is create on an SVN
+  "server" and you can use SVN clients to connect to it and make
+  editions.
+
+  -- Git --
+    Git is an open-source source control system and get popular among
+  individual developers but also large corporations. Git is a
+  decentralized source control system, which provides much more
+  flexibility and increases the efficiency of version controlling.
+
+  -- Microsoft Team Foundation Server --
+    Offering source control with data collection, reporting and project
+  tracking. Three-tier architecture: client tier, the application tier
+  and the data tier. It is part of Visual Studio Team System.
+
+---------------------------------------------------------------------
+
+=====================================================================
+
+
+=== Next Lecture ====================================================
+
+  1 Introduction to Git
+  2 Git Operations
+  3 Host on Github
+
+=====================================================================

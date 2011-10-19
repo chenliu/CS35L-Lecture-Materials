@@ -1,0 +1,332 @@
+==AGENDA=======================================
+
+ 0 Course Logics, HW FAQ, Installing FAQ
+ 1 VIM review
+ 2 More advanced command line knowledge
+ 3 Introduction to Emacs
+ 4 Lab Hints
+ 5 Review & Next lecture
+
+===============================================
+
+
+==More about course logistics===================
+
+  The topics and assignments for following session
+  is tentative, it may change as schedule progress.
+
+  Piazza: http://piazza.com/class#fall2011/cs35l
+    - A platform for question and answer
+    - Read existing questions first
+    - Most for questions about assignments/lecture
+    - Any one of the TA will help you. If you are 
+      asking a session-specific question, please 
+      simply email me instead. 
+    - You are encouraged to answer questions!!
+
+  How to join Piazza?
+    a) Go to Piazza website(http://www.piazza.com).
+    b) Click on “Enroll Now” button.
+    c) Where do you go to school? Type “UCLA”.
+    d) Select “University of California, Los Angeles”.
+    e) Find “CS 35L” and click on “enroll” button.
+
+  Homework grading: Everything you turned in counts
+
+  Office Hour: Monday, Wednesday, 4:30PM - 5:30PM
+
+  Other TA's (tentative) office hour:
+  Jiwen Cai: Tuesday, Thursday, 4:30PM - 5:30PM
+  Joseph Kim: Thursday 11:00AM-12:00PM 1:00PM - 2:00PM
+
+  PTE will be determined in next week. Be patient.
+    - Absolutely possible
+    - No guarantee
+    - Order on the PTE list won't affect your chance
+
+  Downloadable Lab materials: 
+    cs.ucla.edu/~chenliu/cs35l/
+
+================================================
+
+
+==Guidelines for Homework Fomat==================
+  - Another TA may grade your homework. So please
+    follow the instructions on format.
+  - For logs, you don't have to record any strokes
+    you made. The purpose for log is for grader to
+    reproduce your work. Record minimal steps. 
+    Leave comments like "read through the result 
+    of ls".
+================================================
+
+
+==Lab environments==============================
+  - These knowledge will not cover in our class
+  - Please refer the ubuntu official documentation
+  - Free VM Softwares
+      - Virtual Box
+      - Tutorial is available on Piazza
+  - Installing on USB disk can save file while 
+    booting from USB disk may not.
+      http://cs.ucla.edu/classes/fall10/cs35L/news.html
+  - Use ssh to log onto lnxsrv.seas.ucla.edu
+      - Get your SEAS account
+      - You may ssh from Windows/Mac system
+        http://www.seasnet.ucla.edu/UnixServers/lnxsrv
+
+  - Questions on Ubuntu installing are welcome to
+    be asked in Piazza
+      - You may expect a relatively lower priority
+================================================
+
+
+--VIM review------------------------------------
+  open/create a file    vim <filename>
+  save                  :w
+  quit                  :q
+  save & quit           :wq
+  save without quit     :q!
+  move                  h j k l ^D ^U w b
+  insert                i I a A
+  replace               r R
+  go to command mode    ESC
+  go to visual mode     v V
+  delete/cut            x d
+  yank                  y
+  <command><op>         Example: d$
+  register              Example: "ayy
+  paste                 p
+  undo                  u
+
+  !! Never park in the insert mode !!
+
+  Refer to the cheat sheet for other techniques
+
+  Try to find how to do following:
+  
+  - go the the start/end of line/file
+  - go to a line with line number
+  - search / replace
+
+  Recommend to go through the online tutorial:
+  blog.interlinked.org/tutorials/vim_tutorial.html
+------------------------------------------------
+
+
+==Command Line Revisited========================
+
+--more about file types-------------------------
+  link       
+    pointer to a piece of file system
+  symbol link 
+    pointer to a reference of a file
+    'shortcut' in MS Windows
+  executable files
+    files with execution bit set.
+------------------------------------------------
+
+--Environmental variables-----------------------
+  variables?
+  $ sign
+
+  PATH
+    http://en.wikipedia.org/wiki/PATH_(variable)
+  separate paths by ':'
+------------------------------------------------
+
+--standard I/O-----------------------------------
+  what does 'print' mean in the assignment?
+
+  echo       print the argument
+
+  redirection
+    >        write to a file (overwrite)
+    >>       append to a file
+    <        redirect the stdin
+
+  redirect your output when it is too long
+------------------------------------------------
+
+--pipeline---------------------------------------
+  ls | wc    redirect the output of ls to the
+             input of wc
+
+  ls | less  redirect the output to less
+
+  ls | grep <pattern>     find
+
+  use elementary tools to build your gadget
+------------------------------------------------
+
+--Unix command tools philosophy-----------------
+  - Do one thing well
+  - Default using stdio
+  - Don't be chatty
+  - Outputs is compatible to inputs
+  - Regular expressions (next lecture)
+------------------------------------------------
+
+--Manage the processes-------------------------
+  ps           check the current process
+     man ps for more usage
+  kill [pid]   terminate a process
+  top          interactive console of processes
+     type '?' for help
+----------------------------------------------
+
+
+==Introduction to Emacs=======================
+
+--What is Emacs? -----------------------------
+  Everything but a WYSIWYG editor
+  Extensible for
+    - compiling/debugging programs
+    - Check emails
+    - Command prefix
+        C-    Ctrl
+        M-    Meta (Alt on PC/Mac)
+        Esc   Meta
+
+  No mode switching!
+    Anything you type other than the combination
+    of functional keys are interpretted as text
+
+  X window support
+    You can use mouse / menu under linux GUI
+    Pure command line Emacs
+      (Tips: Ctrl-Alt-F1 switch to tty1,
+             Ctrl-Alt-F7 back to GUI)
+    X window for vim?
+      mvim - Mac OS X
+        http://macvim.org/OSX/index.php
+      gvim - Ubuntu
+        apt-get install vim-gtk
+----------------------------------------------
+
+--Basic Emacs operations----------------------
+  
+  open/create a file    emacs <filename>
+  save                  C-x C-s
+  quit                  C-x C-c
+  move                  arrow keys
+                        C-b C-f C-p C-n
+                        C-x [    C-x ]
+                        C-v      M-v
+  add mark              C-SPC
+  kill region           M-w
+  Save region in reg    C-x 'r' s
+  Paste reg into buffer C-x 'r' i
+  Undo                  C-x u
+  Go to a line          M-X goto-line
+     Use 'TAB' for auto-completion in minibuffer
+  exit a command        C-g
+ 
+  Refer to the cheat sheet for other techniques
+
+  Try to find how to do following:
+  
+  - go the the start/end of line/file
+  - search / replace
+
+  VIM vs Emacs
+    - You need to know the basics for both
+    - Choose one to expertise
+  
+  Want to be an Emacs guru?
+    Learning GNU Emacs, Third Edition
+    http://bit.ly/oCoPs8
+-----------------------------------------------
+
+--Customize VIM -------------------------------
+
+.vimrc    Configuration file for vim
+  ls -la      list the hidden files
+              File starts with '.' is supposed
+              to be hidden
+
+  example: http://www.vi-improved.org/vimrc.html
+
+set command
+  set shiftwidth=4
+  set softtabstop=4
+  syntax on
+-----------------------------------------------
+
+--Customize Emacs -----------------------------
+
+.emacs   Configuration file for Emacs
+    example: http://www.mygooglest.com/fni/.emacs
+  
+  use wget to get the online content:
+    wget [url]
+
+  this file is written in lisp
+  make sure you know what you are doing
+
+  key-binding    (relatively easy)
+    (GNUEmacs
+    (global-set-key (kbd "M-g") 'goto-line))
+    
+    Make sure your new combination is not a 
+    prefix of other command. (e.g. Don't bind
+    C-x)
+------------------------------------------------
+
+==HINTS ON ASSIGNMENTS=========================
+
+Read the assignment spec carefully please.
+
+When you have no idea
+  - read the question again
+  - read the man page
+  - think of a basic/naive way first, then dive
+    into more elegant solutions
+
+high level hints
+  - most answer can be aquired by reading man 
+    page
+  - problem 1 is useful for solving other problems
+  - for homework problem, looking up the cheat
+    sheets for a possibly shortcut
+  - if you want to type too much in log, try
+    search/replace commands
+
+wget
+  - Non-interactive network downloader
+  - Usage: wget <url>
+
+diff
+  - Compare files line by line
+  - "+" and "-" indicates the different lines
+
+p5  symbol link can be recursive
+p12 oldest means the modification date
+p13 try auto-completion
+
+Ex1.4v
+p7  pay attention to the existing comments
+
+==REVIEW========================================
+
+Topics Covered:
+  - Basic OS Knowledge
+  - Linux File systems
+  - Basic Linux Commands
+  - Basic Vim and Emacs
+
+Assignments Due:
+  - Friday 23:59:59
+  - Penalty will apply for late submission!
+
+Next week:
+  - Advanced command usages
+  - Regular Expression
+  - Shell Scripting
+  - Recommend reading:
+    http://bit.ly/nmgh8g
+=================================================
+
+THANK YOU !!
+BYE!!
+

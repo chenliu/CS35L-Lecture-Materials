@@ -1,0 +1,257 @@
+-------------------------------------------------
+|     CS 35L SOFTWARE CONSTRUCTION LAB          |
+|   PYTHON COMMAND LINE TOOLS, MAKE, AUTOMAKE   |
+|           October 12, 2011                    |
+-------------------------------------------------
+
+=== AGENDA ======================================
+  1 Build a Command Line Tool Using Python
+    1.1 Command Line Tools Revisited
+    1.2 Optparse module in Python
+    1.3 Add your tool to PATH
+  2 Introduce Makefile
+    2.1 Why we need Makefile
+    2.2 An anotonomy to a basic Makefile
+  3 Introduce Autotools
+  4 Schedule of next lecture
+=================================================
+
+
+==== BUILD A COMMAND LINE TOOL USING PYTHON =====
+
+---- Command Line Tools Revisited ---------------
+
+  -- What is a command line tool? --
+  A command line tool performs a task given input
+  from command line environment and output the 
+  results after finishing the task.
+
+  -- Pros and Cons --
+  + Modularity and reusability
+  + Easy to automate
+  + Easy to be envoked from different PLs
+  - Low usability
+  - Rely heavily on documentation
+  - Cannot do too complicated jobs (MIMO)
+
+  -- Philosophy --
+  * Do one thing well
+  * Error handling on input / output
+  * Make output adaptable to other tools
+
+  -- Essentials of Command Line Tools --
+  * Command
+  * Short Option
+  * Long Option
+  * Option argument
+  * Arguments
+
+  Example:
+    make -f myMakeFile -s --ignore-errors\
+    --include-dir="/var/lib/abc" myprj
+
+--------------------------------------------------
+
+
+---- optparse Module in Python -------------------
+
+  -- optparse --
+  optparse module is used for parsing command-line 
+  options for command-line tools
+
+  Documentation: http://docs.python.org/library/optparse.html
+
+  -- OptionParser class --
+  >>> from optparse import OptionParser
+  >>> help(OptionParser)
+  
+  parser = OptionParser()
+
+  -- Parse an option with option argument --
+  parser.add_option("-n", "--numlines",
+                   action="store", dest="numlines", default=1,
+                   help="output NUMLINES lines (default 1)")
+
+  Store action tells optparse to take next argument into an
+  instance variable of OptionParser object.
+
+  -- Parse a bloolean option / flag --
+  parser.add_option("-v", action="store_true", dest="verbose")
+
+  -- Reference the value of option argument --
+  parser.numlines
+
+----------------------------------------------------
+
+
+---- Add your tools to Path ------------------------
+
+  -- Put your file to a folder --
+  e.g. /home/yourname/tools/
+
+  -- Make your scripts excutable --
+  chmod 755 yourscripts
+
+  -- Add the folder to PATH --
+  # Go to your home folder
+  cd ~
+  vim .bashrc
+  # Add the following line
+  export PATH="$PATH:/home/yourname/tools/"
+
+  Adding your tools to Path enables you call your 
+  script without specifying the full path.
+
+-----------------------------------------------------
+
+=====================================================
+
+
+
+==== INTRODUCE MAKEFILE =============================
+
+---- Make utility -----------------------------------
+
+  Run make command
+  - The program will look for a file named "Makefile"
+    in your directory and execute it.
+
+  make -f MyMakeFile
+  - Execute the specified make file
+
+  It is makefile actually defines the way we build a
+  software. Make is the command to interpret Makefile
+  and execute it.
+
+-----------------------------------------------------
+
+
+---- Build Process of C/C++ Programs ----------------
+
+  1 Compile the source file and output object files
+
+  2 Link the object files to assemble an executable
+
+  If we use compiler and linker to do this file by
+  file, it may requires hundreds lines of code.
+
+  Even worse, if we write them into a script, a minor
+  change such as rename a component may require 
+  rewriting of the whole script.
+
+  Makefile is the most efficient way to automate the
+  build process.
+
+-----------------------------------------------------
+
+---- An Anatonomy of a Basic Makefile ---------------
+
+  -- Syntax --
+  target: dependencies
+  [tab] system command
+
+  Ex: Makefile-1
+
+  -- Dependencies --
+  For a complex software, usually changing one part
+  of the software will not affect the other parts.
+  
+  We can specify the dependencies in Makefile by grouping
+  different sources into different targets.
+
+  Ex: Makefile-2
+  --------------
+  all: hello
+
+  hello: main.o factorial.o hello.o
+        g++ main.o factorial.o hello.o -o hello
+
+  main.o: main.cpp
+        g++ -c main.cpp
+
+  factorial.o: factorial.cpp
+        g++ -c factorial.cpp
+
+  hello.o: hello.cpp
+        g++ -c hello.cpp
+
+  clean:
+        rm -rf *.o hello
+  --------------
+
+  If we change the file factorial.cpp, when execute make:
+  (1) factorial.cpp has changed, so factorial.cpp will be 
+      recompiled and factorial.o will be regenerated.
+  (2) After factorial.o regenerated, the target hello will
+      be triggered and new hello will be relinked and a
+      new excutable will be generated.
+
+  During this process, hello.o, main.o are not changed.
+
+  -- Variables and comments --
+  Sometimes, we would like to set some global parameters
+  (e.g. the compiler, the options for the compiler, etc.)
+  This allows users to customize the building behavior 
+  with minimum efforts.
+
+-----------------------------------------------------
+
+
+==== Autoconf and automake ==========================
+
+  -- The classic installation process of GNU tools --
+
+  ./configure
+  make
+  make install
+
+  -- Why not simply use make? --
+  C/C++ code are not always portable
+   * Different libraries
+   * Different system specs (32bit/64bit)
+   * Not all users are capable to modify Makefile
+     to fit their system.
+
+  -- How to use autotools to make code portable--
+   * autoconf - generate the "configure" script
+   * automake - generate Makefile
+   * Libtool  - create platform-independently 
+                shared libraries
+
+  -- Install autotools --
+   * autoconf, automake
+     sudo apt-get install autoconf
+   * libtool
+     sudo apt-get install libtool
+
+  -- Use auto tools on our example --
+   1 ) run "autoscan" in your project folder
+       autoscan is the tool to prepare the input
+       for autoconf
+
+   2 ) mv configure.scan configrue.ac
+       Review configure.scan and change the content
+       if necessary, then save it with name configure.ac
+
+   3 ) create Makefile.in
+       mv Makefile Makefile.in
+       This Makefile will be used as a template to add
+       portable features into it.
+
+   4 ) run configuration file
+       ./configure
+
+   5 ) Now you can make your code.
+
+  -- More on autotools --
+  See the tutorials at
+  http://markuskimius.wikidot.com/programming:tut:autotools
+
+========================================================
+
+
+==== Schedule of next lecture ==========================
+  1 diff and patch
+  2 Version control
+  3 Introduction to GIT
+========================================================

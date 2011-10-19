@@ -1,0 +1,478 @@
+-------------------------------------------------
+|     CS 35L SOFTWARE CONSTRUCTION LAB          |
+|    PYTHON PROGRAMMING AND BUILD A PACKAGE     |
+|           October 10, 2011                    |
+-------------------------------------------------
+
+=== AGENDA ======================================
+  0 Frequent Questions about HW2
+    0.1 More about the loops
+    0.2 Read input in Script
+    0.3 Test and [ ]
+    0.4 Quotes
+    0.5 Evaluation Order
+  1 Introduction to Python
+    1.1 Highlights of features in Python
+    1.2 Interacting with Python
+    1.3 Variables and Data Structures
+    1.4 Flow control
+    1.5 Functions
+    1.6 Classes and Instances
+  2 Modifying Software Lab
+    1.1 Download and Extract the Software Package
+    1.2 Compile and Install
+  3 Introduction to C program compiling and Makefile 
+  4 Schedule of next lecture
+=================================================
+
+
+== FREQUENT QUESTIONS ON HOMEWORK ===============
+
+-- More About the Loops -------------------------
+
+   --For loop--
+
+   --Loop through a sequence of numbers--
+   for ((i=0; i<10; i++))
+   do
+     echo $i
+   done
+
+   --Loop through a result of previous command--
+   lscommand=`ls`
+   for i in $lscommand
+   do
+     echo $i
+   done
+
+   --Loop through the content of a file--
+   for i in `cat`
+   do
+     echo "i is $i"
+   done < ls.txt
+
+-------------------------------------------------
+
+
+-- Read input to Shell --------------------------
+
+  --read command--
+  echo "Please input your words"
+  read words 
+  echo $words
+
+  --Read the content of file using read--
+  while read var
+  do
+     echo $var
+  done < file.txt
+
+-------------------------------------------------
+
+---- Test command and [] ------------------------
+
+  -- Test the return value --
+  if grep 'abc' > /dev/null
+  then
+    echo 'yes!'
+  fi < abc.txt
+
+  grep 'abc' > /dev/null
+  if test $? -eq 0
+  then
+    echo 'yes!'
+  fi < abc.txt
+
+  -- Test a file --
+    File exists is built-in in every file test.
+    Use && to group multiple creteria.
+    test -r test2.txt && test -x test2.txt
+
+  -- [ ] as a shorthand
+    [ -f test.txt ]
+    * leave spaces before and after [ ]
+    * don't write test again, [] = test
+    * use &&, || to do boolean arithmetics
+
+-------------------------------------------------
+
+
+---- Quotes -------------------------------------
+
+  -- Backslash \ --
+    \ escapes a single character
+      - turn a special character into its literal
+        e.g. \* 
+      - form special characters 
+        e.g. \n
+
+  -- Single Quotes '' --
+     ' ' tells shell to treat all the content enclosed
+     as their literature. (Strong quote)
+
+  -- Double Quotes "" --
+     " " tells shell to treat all the content enclosed
+     as a single string, but perform variable expansion
+     and special character handling first. (Weak quote)
+
+  -- Back Quotes `` --
+     ` ` tells shell to execute the command enclosed in
+     a subshell and replaced it with the results of the
+     command. 
+
+-------------------------------------------------
+
+
+---- Evaluation Order ---------------------------
+
+  Variables are expanded before the whole command
+  is executed.
+
+  e.g. ls $dir
+  The variable $dir will be expanded before the
+  command ls running. 
+
+  Variable expansion is only performed once.
+  e.g. lsd = 'ls $dir'
+  $lsd   #incorrect!!
+
+  Redirections can not be enclosed in a variable
+  e.g. readtext='cat < $textfile'
+  $readtext
+  'cat: '<', no such file or directory
+
+  Use eval command to start a new evaluation.
+
+-------------------------------------------------
+
+=================================================
+
+
+== INTRODUCTION TO PYTHON========================
+
+----What is Python-------------------------------
+
+  Python
+   - A script language
+   - A general purpose programming language
+   - Extensible using C/C++
+
+  -- Highlights of features --
+   * Built-in high level data types
+   * Interactive Shell
+   * Object-oriented
+   * Libraries / modules
+
+  -- Start Python --
+   * type "python" in your shell
+     You will see
+     >>>
+   * type print "hello world"
+     hello world
+     >>>
+
+  -- Run a python script --
+   * python myscript.py
+
+  -- SheBang line --
+  #! /usr/bin/python
+  $ chmod +x myscript.py
+  $ ./myscript.py
+
+-------------------------------------------------
+
+
+---- Interactive Python -------------------------
+
+  Python provided an interactive shell to 
+  interpret python code and execute line by line.
+
+  -- Get help --
+  >>> help()
+  >>> help(obj)  #obj is any object
+  >>> dir(obj)   #show variables / functions
+
+  -- Arithmetics --
+  >>> 3 + 2
+  5
+  >>> 3 / 2
+  1
+  >>> 3 / 2.0
+  1.5
+  >>> 3 // 2.0
+  1.0
+  >>> 3 ** 2
+  9
+
+  -- Load modules --
+  >>> import os
+  >>> os.devnull
+  '/dev/null'
+
+------------------------------------------------
+
+
+---- Varaibles ---------------------------------
+
+  Python variables are 
+    * Strong typed
+    * Dynamically, implicitly typed
+
+  >>> a = '1'
+  >>> type(a)
+  <type 'str'>
+  >>> 2 + a
+  type error!
+
+  >>> a = 1
+  >>> type(a)
+  <type 'int'>
+
+  Every variable is an instace of object.
+  >>> a = dict   #type object
+  >>> a = dict() #a new instance of dict()
+  >>> a = len    #function object
+
+------------------------------------------------
+
+
+---- Data Structres ----------------------------
+
+  -- Data types --
+  int, float, string
+  
+  -- Data Structures --
+
+    -- Tuple --
+    >>> b = (1,2)
+    >>> a = (b, 3)
+    >>> a
+    ((1,2),3)
+
+    -- List --
+    >>> a = [1, 2, 3]
+    >>> a[0]
+    1
+    >>> c = [a, b, 3, "hello world"]
+ 
+    Access tuple and list using subscriptions
+    a[1], b[1], c[0][1][0], a[1:], a[-1], c[2:4]
+
+    Populate list use '.append()'
+    b.append(3)
+
+    -- Dict --
+    d = {}
+    Store key, value pairs
+    d[1] = 32
+    d['hello'] = 'world'
+    d.values(), d.keys(), d.items()
+
+    -- String --
+    "", ''
+    escape special chracters, e.g. "\n"
+
+    Build a string
+    "%s %d-%d-%d" % ("John", 310, 123, 1234)
+
+    Multi-line / literature
+    >>> print """abc\n
+    abc\t"""
+    >>> print r'\r\n'
+
+    """ """ sometimes is used to write a multi-
+    lines comments.
+    # is a single line comment
+
+-------------------------------------------------
+
+
+---- Flow Contorl -------------------------------
+
+  Python use indent to specify code blocks
+
+  -- If...else... --
+  if a > b:
+      print '%d is greater than %d' % (a,b)
+  elif a < b:
+      print '%d is less than %d' % (a, b)
+      print '!'
+  else:
+      print 'they equal to each other...'
+
+  -- while --
+  while(condition):
+      #--loop the code--
+  #outside the loop
+
+  -- for --
+  for i in range(1,10):
+      print i
+  else:
+      print 'finish'
+
+  for ele in c:
+      print ele
+-------------------------------------------------
+
+
+---- Functions ---------------------------------
+
+  def my_function(arg1, arg2 = 0):
+      #body of function
+      return arg1 + arg2
+  #outside the function
+
+  function optionally returns object (tuple of
+    objects)
+
+  parameters are passed by reference
+  immutable objects
+-----------------------------------------------
+
+
+---- Classes -----------------------------------
+
+  class MyClass(object):
+      static_var = 3        #static variable
+
+      def __init__(self, val):   #constructor
+          self.var = val      #instance variable
+
+      def print_var(self):  #print var
+          print self.var
+
+      def static_func():    #static function, no self
+          print MyClass.static_var
+
+  Instantiate the class:
+      an_instance = MyClass(100)
+      an_instance.var
+      an_instance.static_var
+      an_instance.print_var()
+      MyClass.static_func()
+
+-------------------------------------------------
+
+
+---- Interpret a .py script ---------------------
+
+  if __name__ == "__main__":
+
+    This line indicates the entry point of the 
+  program. If we don't specify this line, it will
+  execute from the first "module-level" statement.
+
+  Best practice:
+    Always enclose your code in a function, use a
+  main function if you want to execute from the
+  script directly.
+
+  -- Arguments --
+    The command line arguments can be accessed
+  using sys.argv. sys.argv is a list, the arguments
+  will be listed in their original order starting
+  from sys.argv[1] (sys.argv[0] is the script name).
+
+-------------------------------------------------
+
+refs: http://www.korokithakis.net/tutorials/python/
+
+=================================================
+
+
+==== Lab: Installing and Modifying Software======
+
+---- Lab Walkthrough ----------------------------
+
+   1 Read the assignment. Be clear with following
+     questions before you start typing:
+
+     a) What package do you need to modify?
+     b) What is the bug?
+     c) Which file is relevant to the bug?
+     d) How to fix the bug?
+
+   2 Download coreutils package
+     wget http://ftp.gnu.org/gnu/coreutils/coreutils-7.6.tar.gz
+
+   3 Extract the package
+     tar -xzvf coreutils-7.6.tar.gz
+
+   4 Read the INSTALL file
+     less INSTALL
+     pay attention to the usage of --prefix
+     any other useful parameters?
+
+   5 Configure your package
+     * configure checks the envrionment and generate a Makefile
+       according to the machine settings.
+     * avoid user creating / modifying a Makefile
+     * avoid system specific pitfalls
+     * allow possible optimization
+
+     ./configure --prefix="XXXXXX"  # What is prefix here?
+
+   6 Make and install
+     make          #compile the code, generate executable files
+     make install  #put excutables into target folder, build links
+
+   7 Fix the bug
+     Change the file using VIM or Emacs.
+     Read the patch (a diff file output).
+     Do NOT use tools like "patch" (the line number is for previous
+     versions)
+
+   8 Recompile the file
+     make          #only files have been changed are recompiled
+
+   9 Run your new program
+     The compiled executable file will be located in ./src/ls
+
+=================================================
+
+
+
+==== Compile C Programs and Makefile=============
+
+---- Compile the C/C++ code ---------------------
+
+  gcc GNU C compiler
+     gcc a.c -o a.out
+  
+  g++ GNU C++ compiler
+     g++ a.cpp -o a.out
+
+-------------------------------------------------
+
+
+---- What if we have multiple files? ------------
+
+   g++ -o kernel.o -c kernel.cpp    #compile
+   g++ -o gui.o -c gui.cpp
+   g++ -o prog.exe kernel.o gui.o   #link
+
+   We need more than one command for the build 
+   process. Solutions?
+
+   Write a script? Yes, but difficult to maintain.
+
+   -- Makefile --
+   A spec of building softwares from a script
+   A shell script to instruct the compiler how to 
+   build the software with some existing mechanics
+   to take advantage.
+
+-------------------------------------------------
+
+=================================================
+
+
+==== SHEDULE OF NEXT LECTURE ====================
+
+  1 Python command line tool-building
+    (randline.py as example)
+  2 Write a basic Makefile
+  3 Introduction to Automake
+
+=================================================
