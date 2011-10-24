@@ -1,0 +1,233 @@
+   -------------------------------------------------
+   |     CS 35L SOFTWARE CONSTRUCTION LAB          |
+   |     C Programming, Compiling, Debugging       |
+   |           October 24, 2011                    |
+   -------------------------------------------------
+
+=== AGENDA ===========================================
+  1 C for C++ Programmers
+    1.1 I/O operations
+    1.2 Memory Allocation
+    1.3 Struct
+    1.4 Pointers revisited
+  2 Compile C Code
+  3 Introduction to GDB
+  4 Student Presentation
+  5 Next Lecture
+======================================================
+
+
+==== 1 C for C++ Programmers =========================
+
+  -- About the name "C++" --
+    You must know the self increment operator "++", if
+  we have i = 1, then expression "i++" still evaluated
+  as 1. That's the idea for C++, C++ is compatible to 
+  C programming language, but with some extension.
+
+  -- "C = C++--" --
+    Most language features of C++ is compatible with C,
+  except the following:
+    * classes and object=oriented features (including
+      templates, inheritance, override etc.)
+    * new and delete.
+    * The stream operator >> and <<
+    * standard libraries (e.g. <iostream>, <string>)
+    * flexible variable definition
+
+  ---- 1.1 I/O operations ----
+
+    In C, there is no I/O stream objects like istream
+  or ostream class in <iostream>. We use the I/O 
+  functions provided in <stdio.h> to handle the inputs
+  and outputs.
+    #include <stdio.h>
+
+  -- FILE pointer --
+ 
+   FILE * is a pointer to a file, <stdio.h> provides
+  three global pointers: stdout, stderr, stdin.
+    Recall that in Unix, input output streams is actually
+  a file.
+    We can open/close regular files with the following 
+  functions:
+
+  FILE *fopen(const char *filename, const char *mode);
+  int fclose(FILE *stream);
+
+  We can read/write bytes from file using:
+  size_t fread(void *ptr, size_t size, size_t nmemb, FILE *stream);
+  size_t fwrite(const void *ptr, size_t size, size_t nmemb, FILE *stream);
+
+  In most situations, we write characters (string) to a
+  file, the following is the most frequently used I/O 
+  functions handling characters / strings.
+
+  -- Write output to files (streams) --
+  
+  int printf(const char *format, ...);
+  int fprintf(FILE *stream, const char *format, ...);
+  int fputs(const char *str, FILE *stream);
+  int fputc(int char, FILE *stream);
+
+  -- Read input from files (streams) --
+
+  int scanf(const char *format, ...);
+  int fscanf(FILE *stream, const char *format, ...);
+  char *fgets(char *str, int n, FILE *stream);
+  int fgetc(FILE *stream);
+
+  -- String format --
+
+  %s  char*  string (character array)
+  %d  int    integers     %ld long   long integer
+  %f  float  float number %lf double double-accuracy floats
+
+  ---- 1.2 Memory Allocation ----
+
+    Memory allocation in C is performed in a very low level,
+  the programmer need to specify the size of the memory block
+  they want to allocate, and the pointer pointing to the
+  block of memory.
+
+  #include<stdlib.h>
+
+  void *malloc(size_t size);
+  void free(void *ptr);
+  void *realloc(void *ptr, size_t size);
+
+  Example:
+
+    int i;
+    int *arr = malloc(20 * sizeof(int));
+
+    for (i = 0; i < 20; i++)
+        arr[i] = i;
+
+    free(arr);
+
+  Always free after malloc!!
+
+  ---- 1.3 Struct ----
+
+    In C, there is no concept of class, but we can still
+  define struct for complex data types.
+
+  struct point {
+    int x;
+    int y;
+  };
+
+  -- typedef --
+
+  typedef creates an alias of one type.
+  Example: typedef struct point Point;
+
+  We usually integrate struct declaration with typedef:
+  typedef struct point {
+    int x;
+    int y;
+  } Point; 
+
+  -- Use struct variables --
+  Point* ptrX = malloc(sizeof(Point));
+  ptrX->x = 1;
+  ptrX->y = 2;
+
+  free(ptrX);
+
+  ---- 1.4 Pointers ----
+
+  Pointer store the address of a block of memory.
+  It is associated with a type.
+
+  int *ptrNum;
+  
+  You can dereference the pointer with '*', and []
+
+  *ptrNum
+  ptrNum[0]
+  *(ptrNum + 2)
+  *ptrNum + 2
+
+  You can get a pointer to a variable using &
+  ptrNum = &iNum;
+
+  -- Pointers to pointers --
+  char c = 'A';
+  char *ptrC = &c;
+  char **ptrPtrC = &ptrC;
+
+======================================================
+
+
+== 2 Compile C Code ==================================
+
+  From source code to executables:
+                                Libraries
+  Source ------------> Assembly-------------> Excutable
+   Code    compiler     Code    Link Editor
+
+  Compiler
+    * Preprocessing the code
+      - Remove comments
+      - Interpretting macros
+    * Translate source code to assembly code.
+
+  Assembler
+    * Creates object code
+
+  Link Editor
+    * Combine symbols from multiple files, if the source
+      code references library functions or functions in
+      other source files.
+
+======================================================
+
+
+== 3 Introduction to GDB =============================
+
+  -- What is a debugger -- 
+    The purpose of a debugger such as gdb is to allow 
+  you to see what is going on “inside” another program 
+  while it executes—or what another program was doing at 
+  the moment it crashed.
+
+  -- Example: What's wrong with divint --
+
+  - download the code
+  wget http://cs.ucla.edu/~chenliu/cs35l/lecture9/divint.c
+
+  - compile and run
+  gcc -g divint.c -o divint
+  ./divint
+  Floating point exception
+
+  - debug!
+  gdb divint
+  (gdb) run   # execute the code
+  ...         # the code hits the rock and hang
+  (gdb) where # which line causes the problem?
+  ...
+  (gdb) list  # list the code near the position
+  ...
+  (gdb) print rhs
+  $1 = 0      # ah! Dividing by zero!
+  (gdb) up    # check what had happened when calling the
+              # function from upper level
+  (gdb) list  # oops! y is 0.
+
+  More power of GDB will be revealed in next lecture.
+
+======================================================
+
+
+== NEXT LECTURE ======================================
+
+  More on GDB
+    * Breakpoints
+    * Step the program
+    * Watch a variable
+    * Stack frames
+
+======================================================
