@@ -1,0 +1,203 @@
+   -------------------------------------------------
+   |     CS 35L SOFTWARE CONSTRUCTION LAB          |
+   |      Debugging Your Code using GDB            |
+   |           October 26, 2011                    |
+   -------------------------------------------------
+
+=== AGENDA ===========================================
+  1 Before you debug
+  2 Basic GDB Commands
+  3 Navigate in GDB
+  4 Get Debuggin Info in GDB
+  5 Lab 5 Getting Started
+  6 Student Presentation
+  7 Next Lecture
+======================================================
+
+
+==== BEFORE YOU DEBUG IT ... =========================
+
+  -- Why we can debug? --
+    Debugger relies on the debugging symbols to recognize
+  the place it should look into. NOT every excutable binary
+  can be simply loaded into gdb for debuggin.
+    Q: I want to debug the whole Linux. Is it possible?
+
+    The Answer is "maybe", the debugging symbols are created
+  during the compiling process. If you compile your code
+  with:
+    gcc -g # enable standard debugging symbols
+    gcc -ggdb # enable gdb specific debugging symbols
+
+  -- Start and quit gdb --
+  You can start gdb using:
+    $ gdb [<binary>]
+  You can quit gdb using:
+    (gdb) quit
+
+  -- Getting Help --
+  You can always get help using:
+    (gdb) help <gdb-command>
+
+  -- Shorthand on commands --
+    You can always be "lazy" in gdb, by just typing part
+  of your command. E.g. "l" equals to "list".
+
+======================================================
+
+
+==== BASIC GDB COMMANDS ==============================
+
+  -- Listing Source --
+  * list your current location
+    (gdb) list
+  * list a function
+    (gdb) list divint
+
+  -- Run the Program --
+  * run your program until exiting
+    (gdb) run
+
+  -- Printing Variables and Expressions --
+  * print the value of a variable
+    (gdb) print guest_name
+    $1 = 0x4005e4 "Ziggy"
+  * print the value of an expression
+    (gdb) print strlen(guest_name)
+    $2 = 5
+  * print a temporary variable
+    print $2
+    $3 = 5
+  * print data given format
+    (gdb) print [/format] <expression>
+      -d: decimal int
+      -u: decimal unsigned
+      -x: hexadecimal
+      -o: octal
+      -t: binary
+      -c: character
+
+  -- Run gdb in Emacs --
+  M-x gdb
+
+======================================================
+
+
+==== NAVIGATE IN YOUR PROGRAM ========================
+
+  -- Breakpoints --
+    Breakpoints are stop signs for the program. After
+  setting a break point, gdb will return control to user
+  when the code hits the breakpoint. Use breakpoints to stop
+  your program whenever necessary.
+
+  -- Set Breakpoints --
+  * Set break point to a given line number
+    (gdb) break 12
+    Breakpoint 1 at 0x4004c1: file hello.c, line 12.
+  * Set break point to a given function
+    (gdb) break main
+    Breakpoint 2 at 0x4004c1: file hello.c, line 10.
+
+  -- Toggle Breakpoints --
+  * Temporarily deactivate a breakpoint
+    (gdb) disable #BP
+  * Reactivate a disabled breakpoint
+    (gdb) enable #BP
+
+  -- Set Conditions to Break Points --
+    (gdb) condition #BP <cond>
+
+  -- Remove Breakpoints --
+  * Delete a specific breakpoint
+    (gdb) delete #BP
+  * Delte all break points
+    (gdb) delete
+
+  -- Set Conditions
+
+  -- Navigate the program --
+  * Step forward (into)
+    (gdb) step
+  * Step forward (over)
+    (gdb) next
+
+======================================================
+
+
+==== KNOW ABOUT YOUR PROGRAM =========================
+
+  -- Watch a variable / expression --
+    'print' command can give us information about the data
+  in the program, but we may not necessarily know when
+  exactly do we need to print.
+
+  * Stop the program if the value of expression changed
+    (gdb) watch <expression>
+  * Stop the program whenever the value of the program reads
+    the value of any object involved in the evaluation of
+    expression
+    (gdb) rwatch <expression>
+  * Stop the program for either case above
+    (gdb) awatch <expression>
+
+  -- Display a variable / expression --
+    (gdb) display <expression>
+    print the value of expression whenever the program
+  stops. Format settings can be used.
+    (gdb) undisplay #DISP
+    cancel the display #DISP.
+
+  -- Find out the backtrace --
+    (gdb) bt
+  #0  0x000000000040050d in divint (lhs=3, rhs=0) at divint.c:16
+  #1  0x00000000004004e3 in main () at divint.c:10
+    The numbers followed by '#' is the frame stack number, 0
+  is your current frame.
+
+  -- Navigate to a given frame --
+    (gdb) frame #FRM
+    Bring you to the frame #FRM, you can also use up and
+  down to navigate between neighbor frames.
+
+  -- Get the info about the stack --
+  * info about current frame
+    (gdb) info frame
+  Stack level 0, frame at 0x7fffffffe830:
+   rip = 0x40050d in divint (divint.c:16); saved rip 0x4004e3
+   called by frame at 0x7fffffffe850
+   source language c.
+   Arglist at 0x7fffffffe820, args: lhs=3, rhs=0
+   Locals at 0x7fffffffe820, Previous frame's sp is 0x7fffffffe830
+   Saved registers:
+    rbp at 0x7fffffffe820, rip at 0x7fffffffe828
+  
+  * list local variables
+    (gdb) info locals
+
+  * list arguments
+    (gdb) info args
+
+======================================================
+
+==== LAB 5 GETTING STARTED ===========================
+
+  -- Laboratory --
+
+  Some hints
+  * What's wrong with ls -lt ?
+  * What's the running process of ls? Which part is wrong?
+  * Why it is a "very old" file gets wrong?
+
+  Difference between Ubuntu and lnxsrv.seas.ucla.edu
+  * On SEAS server, the timestamp is incorrect due to its
+    system spec. If you really want to do it on remote
+    server, try westwholme.seas.ucla.edu
+
+  -- Homework --
+
+  * Use the right function to do I/O
+  * Error handling is important
+  * Start from "easy to debug" examples
+
+======================================================
