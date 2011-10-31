@@ -1,0 +1,159 @@
+   -------------------------------------------------
+   |     CS 35L SOFTWARE CONSTRUCTION LAB          |
+   |         System Call Programming               |
+   |            October 31, 2011                   |
+   -------------------------------------------------
+
+=== AGENDA ===========================================
+  1 System Calls and Library Calls
+  2 How library call works: Example of printf
+======================================================
+
+== SYSTEM CALLS vs LIBRARY CALLS ===================== 
+
+  -- System Calls --
+    System calls are rquests of service from an operating
+  system's kernel.
+    A system call looks like a regular function call, but
+  it's different -- it requests a service from an operating
+  system's kernel. This may include hardware services(e.g.
+  status of disk usage), creating and executing processes
+  and communicating with integral kernel services (e.g.
+  scheduling).
+
+  -- CPU modes --
+    There are two operating modes in CPU architecture.
+
+    * Kernel mode
+      Unristricted mode. Full instruction availability. I/O
+    operation, area of memory accessed are unlimitied.
+    * User mode
+      Limited instructions can be executed. I/O are not
+    permitted. Limited access to memory.
+
+
+  -- Privilledge Levels --
+    The design of modern systems design a security model to
+  specify multiple previliege levels under which a software
+  may be executed.
+    Applications are usually prevented to access other
+  running applications or operating system itself. They are
+  confined in its own address space.
+    When an application requires access to higher
+  privilledge level, it envokes a system call.
+
+
+  -- Library Calls --
+    Systems provide a library to offer API to system calls.
+    * Wrapper of system calls
+    * Exposes a calling convention
+    * Make use of system calls more modular
+    * Increase portability
+    * Typical implementation: glibc
+
+======================================================
+
+
+== HOW LIBRARY CALL WORKS? EXAMPLE: printf ===========
+
+  -- Userspace printf() --
+    * Construct the string
+    * Cannot actual print, not in kernel mode
+    * Call write()
+
+  -- Library call write() --
+    * Place the string in register, place int "1" in another
+    * calls an interrupt with the system call handler
+
+  -- Enter the Kernel --
+    * Read values from register specified
+    * Write to stdout
+    * Return control to the caller
+
+  -- Done --
+    * write() returns to printf()
+    * printf() returns
+
+  Note: this is not a complete walk-through of printf
+  function, it is just for the purpose of illustrating how
+  system calls are made from library calls.
+
+======================================================
+
+
+== syscall() and "System Call Functions" =============
+
+  1 #include <unistd.h>
+  2 #include <stdio.h>
+  3 #include <sys/types.h>
+  4 #include <sys/syscall.h>
+  5 int main(void) {
+  6         long ID1, ID2;
+  7         /*-----------------------------*/
+  8         /* direct system call          */
+  9         /* SYS_getpid (func no. is 20) */
+ 10         /*-----------------------------*/
+ 11         ID1 = syscall(SYS_getpid);
+ 12         printf ("syscall(SYS_getpid)=%ld\n", ID1);
+ 13         /*-----------------------------*/
+ 14         /* "libc" wrapped system call  */
+ 15         /* SYS_getpid (Func No. is 20) */
+ 16         /*-----------------------------*/
+ 17         ID2 = getpid();
+ 18         printf ("getpid()=%ld\n", ID2);
+ 19         return(0);
+ 20 }
+
+  In many situations, people call the wrapper functions such
+  as getpid() as "System Call" as well.
+
+======================================================
+
+
+== EXAMPLE SYSTEM CALLS ==============================
+
+  #include <unistd.h>
+
+  -- Process --
+  void         exit(int);
+  pid_t        fork(void);
+
+  -- I/O --
+  ssize_t      read(int, void *, size_t);
+  ssize_t      write(int, const void *, size_t);
+
+  -- File Status --
+  int          fstat(int filedes, struct stat *buf);
+
+======================================================
+
+
+== GETTING STARTED LAB 6 =============================
+
+  Write two programs:
+    * catb.c 
+      - uses getchar() and putchar()
+    * catu.c
+      - uses read() and write()
+      - nbytes argument shoud be 1
+
+  Sample big file:
+    cs.ucla.edu/~chenliu/cs35l/lecture11/bigfile.txt
+
+  Which functions are buffered I/O ?
+
+  Using strace to test the results.
+    $ strace -o catb.strace ./catb < bigfile.txt
+
+  Using time to measure the speed.
+    $ time ./catb < bigfile.txt
+
+  Question to think about:
+    * What's the difference between catb and catu?
+    * Why there is a difference?
+    * Which takes more time? Write to file, or to stdout?
+    * Why there is a difference?
+
+  strace can give you some hints about the above questions.
+
+======================================================
