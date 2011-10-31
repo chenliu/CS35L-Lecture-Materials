@@ -7,6 +7,9 @@
 === AGENDA ===========================================
   1 System Calls and Library Calls
   2 How library call works: Example of printf
+  3 syscall() and "System Calls" functions
+  4 Example System Calls
+  5 Getting Started Lab 6
 ======================================================
 
 == SYSTEM CALLS vs LIBRARY CALLS ===================== 
@@ -155,5 +158,16 @@
     * Why there is a difference?
 
   strace can give you some hints about the above questions.
+
+======================================================
+
+
+== NEXT LECTURE ======================================
+
+  Vote for topic:
+    * General Q & A about previous homework
+    * Implement your own system calls
+    * More about system calls: insight and examples
+    * Name your ideas!
 
 ======================================================
