@@ -1,10 +1,14 @@
 void function(int a, int b, int c) {
-   char buffer1[5];
-   char buffer2[10];
+    int buffer1[2];
+    int buffer2[4];
+    buffer1[0] = 0;
+    buffer1[1] = a;
+    buffer2[0] = b;
+    buffer2[3] = c;
 }
 
 int main() {
-  function(1,2,3);
-  return 0;
+    function(1,2,3);
+    return 0;
 }
 
