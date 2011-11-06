@@ -1,0 +1,89 @@
+   -------------------------------------------------
+   |     CS 35L SOFTWARE CONSTRUCTION LAB          |
+   |      Stack Frame and Buffer Overflow          |
+   |            November 7, 2011                   |
+   -------------------------------------------------
+
+=== AGENDA ===========================================
+
+  1 Process Memory Region
+  2 Stack Frame
+
+======================================================
+
+
+=== PROCESS MEMORY REGION ============================
+
+               /------------------\  lower
+Code           |                  |  memory
+Read-only data |       Text       |  addresses
+               |                  |
+               |------------------|
+static vars    |   (Initialized)  |
+               |        Data      |
+               |  (Uninitialized) |
+               |------------------|
+               |                  |
+               |       Stack      |  higher
+               |                  |  memory
+               \------------------/  addresses
+
+           Fig. 1 Process Memory Regions
+
+
+  -- What's a Stack? --
+    Stack - LIFO data structure
+    High level programs are built upon the concept of
+  stack.
+    * Procedure Calls
+    * Dynamically allocate local variables
+    * Pass parameters
+    * Return values
+
+  -- The Stack Region --
+    * Contiguous block of memory containing data
+    * The stack pointer (SP) points to top of stack
+    * Bottom of stack is at a fixed address
+    * Size is dynamically adjusted by the kernel
+    * CPU implements PUSH/POP instructions
+
+======================================================
+
+
+=== STACK FRAMES =====================================
+
+  -- Stack Frame --
+    * A logical frame of data
+    * Pushed/Popped when calling/returning a function
+    * Parameters, local vars, data necessary to recover
+      previous stack frame
+
+  -- Frame Pointer (FP) --
+    FP points to fixed location within a frame and
+  varaibles are referenced by offset to the FP.
+    When a procedure call happens, FP is stored.
+
+  -- example1.c --
+
+  void function(int a, int b, int c) {
+    char buffer1[5];
+    char buffer2[10];
+  }
+
+  void main() {
+    function(1,2,3);
+  }
+
+  -- Stack status when "function" is called --
+  [ 10      ][5      ][  ][  ][  ][  ][  ]
+   buffer2    buffer1  fp  ret  a   b  c 
+
+======================================================
+
+
+=== BUFFER OVERFLOW ==================================
+
+  
+
+======================================================
+
