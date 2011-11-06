@@ -58,6 +58,17 @@
   * run your program until exiting
     (gdb) run
 
+  -- Run with the args --
+  * (gdb) run <args>
+  # You don't need to specify your program name here
+  e.g. if you are debugging ls
+       you can use run -t to debug with the option t set.
+
+  * gdb --args <binary> <args>
+    If you envoke gdb in this way, when you execute run
+  command, your gdb will start the program with the args
+  you have specified.
+
   -- Printing Variables and Expressions --
   * print the value of a variable
     (gdb) print guest_name

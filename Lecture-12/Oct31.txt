@@ -8,6 +8,8 @@
 
   1 Process Memory Region
   2 Stack Frame
+  3 Buffer Overflow
+  4 Summary
 
 ======================================================
 
@@ -132,7 +134,71 @@ into a buffer than it can handle.
 
   -- example2.c --
 
+  void function(char *str) {
+     char buffer[16];
 
+     strcpy(buffer,str);
+  }
+
+  void main() {
+    char large_string[256];
+    int i;
+
+    for( i = 0; i < 255; i++)
+      large_string[i] = 'A';
+
+    function(large_string);
+  }
+
+  This example will result in a `segmentation fault'!
+
+  What happened?
+
+  -- Stack status when strcpy is called --
+  [ buffer (16) ] [fp(main)][ret][*str (256)   ]
+
+  -- example3.c: change the return value --
+  void function(int a, int b, int c) {
+   int buffer1[2];
+   int buffer2[4];
+   int *ret;
+
+   ret = buffer1 + 4;
+   *ret = *ret + 8;
+  }
+
+  void main() {
+    int x;
+  
+    x = 0;
+    function(1,2,3);
+    x = 1;
+    printf("%d\n",x);
+  }
+
+  -- Figure out the hacking with gdb --
+  (gdb) info frame
+
+  -- Enough to be dangerous --
+  * We can change the return address
+  * We can write whatever code we want exploiting buffer
+    overflow security hole
+  * We can execute whatever code we want
+  * The command will be executed with the same
+    permission as the original command!
 
 ======================================================
 
+
+=== SUMMARY ==========================================
+
+  * What is stack? What is a stack frame?
+  * How does system manipulate the stack?
+  * What is buffer overflow?
+  * How dangerous it could be?
+  * How to attack exploiting buffer overflow hole?
+
+  In next lecture, we are going to talk about how to
+prevent the problem of buffer overflow.
+
+=====================================================

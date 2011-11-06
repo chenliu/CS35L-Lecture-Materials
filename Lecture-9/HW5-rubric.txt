@@ -5,46 +5,47 @@ Grader: Chen Liu (chenliu@cs.ucla.edu)
 Assigment webpage: http://cs.ucla.edu/classes/fall11/cs35L/assign/assign5.html
 Assignment due: Oct 28 23:59:59
 
-Full Score: 10 Poionts
+Full Score: 100 Poionts
 
 ================================================================================
 
-Laboratory: Debugging a C Program (5 points)
+Laboratory: Debugging a C Program (50 points)
 
-- Correct Log Format (1 point)
+- Correct Log Format (5 points)
   Please follow the spec defined in "Submic" section of the homework. You will
-lost the point if your submission violates any requirement.
+lost these points if your submission violates any requirement.
 
-- Reproduce/ build process (1 point)
+- Reproduce/ build process (10 points)
   Build the code from the tarball and reproduce the bug. You need record the
 following in your lab log:
-    * The command you use to build / reproduce (0.5 points)
-    * Generally describe the results of the command (0.5 points)
+    * The command you use to build / explain the problem with original
+      code(5 points)
+    * Generally describe the results of the command (5 points)
 
-- Expalin the reason why patch fix the bug (1 point)
+- Expalin the reason why patch fix the bug (5 points)
   You need to answer this question by:
-    * Pointing out the errornous code and what's wrong (0.5 points)
-    * Explain how the patch fix it (0.5 points)
+    * Pointing out the errornous code and what's wrong 
+    * Explain how the patch fix it
 
-- Debug to find the problem (1 point)
+- Debug to find the problem (15 points)
   You need to record the following in your lab log:
-    * The debugging command you used (0.5 points)
-    * The problem of the code. What's wrong? (0.5 points)
+    * The debugging command you used (7.5 points)
+    * The problem of the code. What's wrong? (7.5 points)
 
-- lab5.diff
+- lab5.diff (15 points)
   Your lab5.diff will be graded based on:
-    * Correctness. The diff file should fix the bug. (0.5 points)
+    * Correctness. The diff file should fix the bug. (10 points)
     * Format. You need use the correct file format specified in the assignment.
-      (0.5 points)
+      (5 points)
 
 ================================================================================
 
-Homework: Binary sort and remove duplicates (5 points)
+Homework: Binary sort and remove duplicates (50 points)
 
 This part of the homework will be graded based on your code (binsortu.c). You do
 not need to submit your executable file.
 
-You start from the 5 points, and will be penalized if you made any mistakes
+You start from the 50 points, and will be penalized if you made any mistakes
 listed below.
 
 - Compilation
@@ -52,22 +53,25 @@ listed below.
 
 - Input
   read input from: stdin.
-  Your program should be able to read the input from stdin until it meets the end
-of file. Otherwise, you will be penalized by 1 point.
-  
+  Your program should be able to read the input from stdin until it meets the
+end of file. Otherwise, you will be penalized by 10 point.
+  You are required to read every N bytes as a block from the input,
+failed to do so will result in a 5 points penalty. Moreover, this will
+affect your output, so that you may lose more points.
+
 - Output
   write output to: stdout
   If your program fails to write output to stdout, you will get 
   Your output should contain sorted byte blocks with length N without
 duplication. 
   You will be penalized following the rules:
-    a) Number of output records is incorrect (-1.5 points)
-    b) (a) passed, but order of output records is incorrect (-1 point)
-    c) (a) and (b) passed, but fail to pad the trailing '\0' (-0.5 points)
+    a) Number of output records is incorrect (-15 points)
+    b) (a) passed, but order of output records is incorrect (-10 points)
+    c) (a) and (b) passed, but fail to pad the trailing '\0' (-5 points)
 
 - Error Handling
   You need handle the following errors. Missing each of the following will
-result in a 0.5 points penalty. 
+result in a 5 points penalty. 
     * I/O failure
     * allocation failure
     * wrong arguments (number of arguments, argument format)
@@ -77,11 +81,11 @@ and returning proper exit code.
 - Follow the format spec.
   If the format checking command (just above the "Submit" section in the
 assignment description) retuns any output to your code, you will be penalized
-for 0.5 points.
+for 5 points.
 
 - Using the required library
   You should use the required library to write your code. Otherwise, you will be
-penalized for 0.5 points. The required library is specified in the assignment
+penalized for 5 points. The required library is specified in the assignment
 description.
 
 ================================================================================
