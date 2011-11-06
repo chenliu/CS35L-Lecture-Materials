@@ -1,10 +1,12 @@
+#include<stdio.h>
+
 void function(int a, int b, int c) {
-   char buffer1[5];
-   char buffer2[10];
+   int buffer1[2];
+   int buffer2[4];
    int *ret;
 
-   ret = buffer1 + 12;
-   (*ret) += 8;
+   ret = buffer1 + 4;
+   *ret = *ret + 8;
 }
 
 void main() {
