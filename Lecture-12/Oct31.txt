@@ -66,24 +66,73 @@ static vars    |   (Initialized)  |
   -- example1.c --
 
   void function(int a, int b, int c) {
-    char buffer1[5];
-    char buffer2[10];
+    int buffer1[2];
+    int buffer2[4];
+    buffer1[0] = 0;
+    buffer1[1] = a;
+    buffer2[0] = b;
+    buffer2[3] = c;
   }
 
   void main() {
     function(1,2,3);
   }
 
+  -- Compile the code into assmeblers --
+  gcc -fno-stack-protector -S -o example1.s example1.c
+
+  -- Essential of assembler code --
+
+    ~~ Inside main() ~~
+    pushl   %ebp
+    movl    %esp, %ebp
+    subl    $12, %esp
+    movl    $3, 8(%esp)
+    movl    $2, 4(%esp)
+    movl    $1, (%esp)
+    call    function
+
+    ~~ Inside function() ~~
+    pushl   %ebp
+    movl    %esp, %ebp
+    subl    $32, %esp
+    movl    $0, -8(%ebp)
+    movl    8(%ebp), %eax
+    movl    %eax, -4(%ebp)
+    movl    12(%ebp), %eax
+    movl    %eax, -24(%ebp)
+    movl    16(%ebp), %eax
+    movl    %eax, -12(%ebp)
+    leave
+
+    ~~ Instructions ~~
+    pushl - push a value into stack
+    movl - move data from one reg/mem to another
+    subl - substract the value
+    call - call function
+    leave - leave the function
+
+    ~~ Registers ~~
+    %rsp: stack pointer
+    %rbp: frame pointer
+    %eax: general data registers
+
+
   -- Stack status when "function" is called --
-  [ 10      ][5      ][  ][  ][  ][  ][  ]
-   buffer2    buffer1  fp  ret  a   b  c 
+  [ buffer2 ] [ buffer1 ] [fp(main)] [ret] [a] [b] [c]
+
 
 ======================================================
 
 
 === BUFFER OVERFLOW ==================================
 
-  
+  A buffer overflow is the result of stuffing more data
+into a buffer than it can handle.
+
+  -- example2.c --
+
+
 
 ======================================================
 
