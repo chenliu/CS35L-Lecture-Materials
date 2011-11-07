@@ -189,7 +189,6 @@ into a buffer than it can handle.
 
 ======================================================
 
-
 === SUMMARY ==========================================
 
   * What is stack? What is a stack frame?
@@ -202,3 +201,33 @@ into a buffer than it can handle.
 prevent the problem of buffer overflow.
 
 =====================================================
+
+=== LAB 7 Getting Started ===========================
+
+  -- Add compiling flag to Makefile --
+  * create a Makefile using ./configure
+  * Edit the Makefile
+    CFLAGS = -g -fno-stack-protector ...
+
+  -- Run your lab on SEAS server --
+  * Make sure everyone uses different port
+    - Last 5 digit of your student id
+    - maximum is 65535, change your port to fit the area
+  * Make sure you kill your process after doing lab
+    ps -e | grep thttpd
+    kill <pid>
+  * Don't create more than 1 instance
+
+  -- Test your web server using command line --
+    Assume we have a server running on port 58559.
+    wget localhost:58559
+    wget will give you information like:
+
+  Connecting to localhost|127.0.0.1|:58559... connected.
+  HTTP request sent, awaiting response... 200 OK
+  Saving to: `index.html.1'
+
+    Check the content of the downloaded file. It should be
+  a html webpage.
+
+======================================================
