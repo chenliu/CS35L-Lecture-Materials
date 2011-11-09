@@ -115,8 +115,8 @@ static vars    |   (Initialized)  |
     leave - leave the function
 
     ~~ Registers ~~
-    %rsp: stack pointer
-    %rbp: frame pointer
+    %esp: stack pointer
+    %ebp: frame pointer
     %eax: general data registers
 
 

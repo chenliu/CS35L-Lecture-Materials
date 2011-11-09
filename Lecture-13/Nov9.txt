@@ -1,0 +1,187 @@
+   -------------------------------------------------
+   |     CS 35L SOFTWARE CONSTRUCTION LAB          |
+   |    Best Practice of Security Programming      |
+   |            November 9, 2011                   |
+   -------------------------------------------------
+
+=== AGENDA ============================================
+
+ 1 Security Programming Best Practice
+ 2 Fundamental Practices for Secure Software Development
+ 3 Buffer Overflow Counter Measures
+ 4 More on Assignment 7
+
+=======================================================
+
+=== SECURITY PROGRAMMING BEST PRACTICE ================
+
+  CERT.ORG - Top 10 Secure Coding Practices
+
+  1 Validate Input
+    * Validate all input from untrusted data sources.
+    * All data sources other than your program should
+      be consider untrusted.
+    * Including: commandline args, network interfaces,
+      environmental variables, and user controlled
+      files.
+
+  2 Heed Compiler Warnings
+    * Using the highest warning level
+    * Eliminate warnings
+
+  3 Architect and Design for Security Policies
+    * Take security into design consideration
+
+  4 Keep It Simple
+    * Complex design makes program vulnerable.
+    * Moreover, it is more complex to fix a security
+      hole with a complex design
+    (This also applies to bug-proof programming!!)
+
+  5 Default Deny
+    * Base access decisions on permission rather than
+      exclusion
+
+  6 Adhere to Principle of Least Privilege
+    * Every process should execute with the least set
+      of privileges necessary to complete the job
+    * An evevated privilege should be held for a
+      minimum time
+
+  7 Sanitize Data Sent to Other Systems
+    * Check your output
+    * Prevent injection attacks
+
+  8 Practice defense in depth
+    * Manage risk with multiple defensive strategies
+    * Combining different techniques
+
+  9 Use Effective Quality Assurance Techniques
+    * Penetration testing, fuzz testing
+    * Source code review
+
+  10 Adopt a source coding standard
+    * Apply a secure coding standard for your target
+      development language and platform
+    http://www.irccrew.org/~cras/security/c-guide.html
+
+https://www.securecoding.cert.org/confluence/display/seccode/Top+10+Secure+Coding+Practices
+
+=======================================================
+
+== BEST PRACTICE OF SECURITY SOFTWARE DEVELOPMEN ======
+
+http://www.safecode.org/publications/SAFECode_Dev_Practices1108.pdf
+
+  -- Programming --
+  * Minimize unsafe function use
+  * Use the latest compiler toolset
+  * Use static and dynamic analysis tools
+  * Manual code review
+  * Validate input and output
+  * Use anti-cross site scripting libraries
+  * Use canonical data formats
+  * Avoid string concat in SQL
+  * Eliminate weak cryptography
+  * Use logging and tracing
+
+  -- Design --
+  * Threat modeling
+  * Using stanadard toolset
+
+  -- Testing --
+  * Fuzz testing
+  * Penetration test nad third-party assignment
+  * Automate testing tools
+
+  -- Code Integrity and Handling --
+  * Least privilege access
+  * Separation of duties
+  * Persistent Protection
+  * Compilance Management
+
+  -- Documentation --
+  * Document "how security the software is"
+  * Do's and Don'ts
+
+=======================================================
+
+
+=== BUFFER OVERFLOW COUNTERMEASURES ===================
+
+  -- Write Secure Code --
+    * Minimize the occurrence of these functions
+      - strcpy, strcat, gets, scanf, sprintf
+    * strncpy
+    * Good use of sprintf
+      char buf[BUFFER_SIZE];
+      spintf(buf, "%.*s", sizeof(buf) - 1, "long-string");
+
+  -- Compiler Tools --
+    * warning for dangerous functions
+    * stack protector
+
+  -- Dynamic runtime checks --
+    * External tools
+
+  * All the tools are limited
+
+=======================================================
+
+
+=== MORE ON ASSIGNMENT 7 ==============================
+
+  -- Essentially... What is an http server? --
+  It allows you host documents/apps on internet.
+  The content can be find using:
+  http://yourhostname:youropenport/service-name
+
+  So, basically, google host their websites on 
+  www.google.com  <-- host name
+                  (default port: 80)
+  and you access to some of their service using
+  http://www.google.com/intl/en/jobs/students/
+                       ~~~~~~~~~~~~~~~~~~~~~~~
+
+  -- Setup Environment for mudflap --
+
+  ~~ Building Error? ~~
+  Think about the "renaming patch" of assignment 5.
+
+  ~~ Ubuntu ~~
+  $ sudo apt-get install gcc-opt
+  $ sudo apt-get install libgcc1
+  $ sudo apt-get install libgcc1-dbg
+  $ sudo apt-get install libmudflap0
+  $ sudo apt-get install libmudflap0-dbg
+  $ sudo apt-get install libmudflap0-4.5-dev
+
+  ~~ SEAS ~~
+  $ bash
+  $ export PATH='/usr/local_cs/linux/bin'
+  $ export LD_LIBRARY_PATH=/usr/local_cs/linux/lib
+
+  Read the "Useful Pointers"
+
+  ~~ Homework ~~
+  Consider the following questions:
+    * Significance of Damage
+    * Ease of exploitation
+    * Widespread
+    * Ease of repair / prevention
+
+  This part is partly taken from Jihyoung "Joseph" Kim's 
+  notes
+
+=======================================================
+
+== NEXT WEEK ==========================================
+
+  SSH setup and use in applications
+  Security basics
+
+    Seems we have already covered a lot on this topic
+  in presentations. Please suggest any topic you are
+  interested in. 
+
+=======================================================
