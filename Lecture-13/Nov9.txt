@@ -106,7 +106,6 @@ http://www.safecode.org/publications/SAFECode_Dev_Practices1108.pdf
 
 =======================================================
 
-
 === BUFFER OVERFLOW COUNTERMEASURES ===================
 
   -- Write Secure Code --
@@ -127,7 +126,6 @@ http://www.safecode.org/publications/SAFECode_Dev_Practices1108.pdf
   * All the tools are limited
 
 =======================================================
-
 
 === MORE ON ASSIGNMENT 7 ==============================
 
