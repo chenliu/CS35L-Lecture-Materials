@@ -1,0 +1,364 @@
+   -------------------------------------------------
+   |     CS 35L SOFTWARE CONSTRUCTION LAB          |
+   |         Multithread Programming               |
+   |            November 21, 2011                  |
+   -------------------------------------------------
+
+=== AGENDA ============================================
+
+  1 Multithreading Model
+  2 Amdahl's Law
+  3 Synchronization
+  4 POSIX threads
+  5 Lab 9 Getting Started
+
+=======================================================
+
+==== MULTITHREADING MODEL =============================
+
+  -- What is a thread? --
+    A thread is defined as an independent stream of
+  instructions that can be scheduled to run as such by
+  the operating system.
+
+  -- Why we need threads? --
+    Some tasks can be done efficiently by parallelism.
+  But new processes will introduce large amount of
+  overhead and consume much resources. Considering all the
+  new processes actually use same resources, it is a
+  waste to allocate the same resources to every
+  process in different memory space.
+    In order to achieve parallelism and save the
+  resources at the same time, the concept of threads is
+  proposed.
+
+  -- Threads vs Processes --
+
+  Process
+    * Created and managed by operating system
+    * Including information about program resources
+      and execution state
+    * Maintain own memory space
+
+  Thread
+    * Resides inside the process scope
+    * Share same resources with other threads in the
+      same process
+      - Code text / instructions
+      - Process ID / User ID / Group ID
+      - Files / Locks / Sockets
+    * Maintain an individual flow of control by
+      duplicating essential information for execution
+      - Stack pointer
+      - Registers
+      - Scheduling properties (priority)
+      - Set of pending / blocked signals
+      - Thread specific data
+    * Each thread is equally independent (and
+      dependent)
+
+  -- Single Thread Application --
+
+  ------------------------------------------
+  | code |                |r |             |
+  |======| Thread         |e |             |
+  | data |    ~~~~~~~~~   |g |   Stack     |
+  |======|                |  |             |
+  | files|                |  |             |
+  |----------------------------------------|
+
+
+  -- Multithreaded Process --
+
+  ------------------------------------------
+  |      |                |  |             |
+  |      | Thread 1       |r |             |
+  | code |    ~~~~~~~~~   |e |   Stack     |
+  |      |                |g |             |
+  |======|                |  |             |
+  |      |---------------------------------|
+  |      |                |  |             |
+  |      | Thread 2       |r |             |
+  | data |    ~~~~~~~~~   |e |   Stack     |
+  |      |                |g |             |
+  |      |                |  |             |
+  |      |---------------------------------|
+  |======|                |  |             |
+  |      | Thread 3       |r |             |
+  | files|    ~~~~~~~~~   |e |   Stack     |
+  |      |                |g |             |
+  |      |                |  |             |
+  |----------------------------------------|
+
+
+  -- Notes for multithreading programs --
+    * Changes made by one thread to shared system
+      resources is visble to all threads
+    * Two pointers in two threads may point to the same
+      memory address
+    * Reading and writing to same memory location is
+      possible and requires explicit synchronization
+
+=======================================================
+
+
+===== AMDAHL'S LAW ====================================
+
+  -- Is the performance doubled with 2 threads? --
+    No. Multithreading does not simply multiply the
+  performance. Keep in mind "overhead" always exists no
+  matter how small it may be.
+
+  -- Compute the performance increase --
+    Assume there are fraction of x of the whole process is
+  paralleled by k times, the whole performance is speed
+  up by:
+    SpeedUp = (previous time cost) / (current time cost) 
+                     1
+            = ----------------
+                 x/k + (1-x)
+
+  The above law is called Amdahl's law.
+
+  This law is important for computer science and system
+  design.
+  * Shows the limitation for technical improvements
+  * Balances the cost and gain
+  * Identify vital features
+
+    In computer science, usually it is the simplest
+  theory which plays a huge role.
+
+=======================================================
+
+
+==== SYNCHRONIZATION ==================================
+
+  -- Shared data problem --
+    * Concurrent access may result in data inconsistency
+    * Need to ensure the orderly execution of
+      cooperating processes
+
+  -- Example: Counter --
+    Assume we have a counter counting the visitors of a
+  website. A daemon process is running to monitor the
+  website, once a new visitor comes, it create a new
+  thread to initialize the data for the user and
+  increment the count
+
+    We have the following very simple statement:
+      count++;
+
+  However, it is more than one command in machine code:
+    read "count" from memory into register
+    add 1 to the register
+    write the value in the register back to memory
+
+  Consider concurrent threads:
+  ---------------------------
+  | Thread 1   |  Thread 2  |
+  |------------|------------|
+  | read c  (0)| read c = 0 |
+  |------------|------------|
+  | add(reg)(1)|            |
+  |------------|------------|      Thread 2 has no idea
+  | write c (1)| add(reg)(1)|  <-- about the update made 
+  |-------------------------|      by Thread 1.
+
+
+  -- Mutexes --
+
+    Mutex = "Mutual Exclusive"
+
+    Prevent data inconsistencies due to operations by
+  multiple threads upon the same memory area performed
+  at the same time
+
+  ---------------------------
+  | Thread 1   |  Thread 2  |
+  |------------|------------|
+  | read c  (0)|  Locked    |
+  |------------|------------|
+  | add(reg)(1)|  Locked    |
+  |------------|------------|      Thread 2 has no access 
+  | write c (1)|  Locked    |  <-- to c. It will be locked
+  |------------|------------|      until Thread 1 does not
+  |            | read c (1) |      access it anymore.
+  |------------|------------|
+
+
+  -- Joins --
+
+    Join is performed whe none wants to want for a thread to
+  finish. If you need a "checkpoint" for your multithread
+  program to converge and synchronize with each other, use
+  join mechanism.
+
+  -- Mutex Deadlock --
+
+    Example:
+    
+    void *function1()
+    {
+       ...
+       pthread_mutex_lock(&lock1);     // Execution step 1
+       pthread_mutex_lock(&lock2);     // Execution step 3 DEADLOCK!!!
+       ...
+       ...
+       pthread_mutex_lock(&lock2);
+       pthread_mutex_lock(&lock1);
+       ...
+    } 
+    
+    void *function2()
+    {
+       ...
+       pthread_mutex_lock(&lock2);     // Execution step 2
+       pthread_mutex_lock(&lock1);
+       ...
+       ...
+       pthread_mutex_lock(&lock1);
+       pthread_mutex_lock(&lock2);
+       ...
+    } 
+
+    main()
+    {
+       ...
+       pthread_create(&thread1, NULL, function1, NULL);
+       pthread_create(&thread2, NULL, function2, NULL);
+       ...
+    }
+
+=======================================================
+
+
+
+==== POSIX Threads ====================================
+
+  -- Three primary thread libraries --
+    * POSIX Pthreads
+    * Win32 threads
+    * Java threads
+
+  -- POSIX Threads --
+    An interface of thread management defined in POSIX
+  standard.
+    Defines programming types and procedure calls.
+
+    Pthreads API can be informally grouped into four major
+  groups:
+    1 Thread Management
+    2 Mutexes
+    3 Condition variables
+    4 Synchronization
+
+  -- Thread Creation and Termination --
+
+  * Initially, main() program comprises a single, default
+    thread.
+
+  { pthread_create } creates a new thread and makes it
+                     executable.
+
+    int pthread_create(pthread_t * thread, 
+                       const pthread_attr_t * attr,
+                       void * (*start_routine)(void *), 
+                       void *arg);
+
+  { pthread_join } wait for termination of another thread
+
+    int pthread_join(pthread_t th, void **thread_return);
+
+  { pthread_exit } terminate the calling thread
+
+    void pthread_exit(void *retval);
+
+
+  -- Mutex --
+
+  Lock and unlock a mutex
+
+  { pthread_mutex_lock } lock a mutex object
+  { pthread_mutex_trylock } won't block by locked object
+  { pthread_mutex_unlock } unlock the mutex object
+
+       int pthread_mutex_lock(pthread_mutex_t *mutex);
+       int pthread_mutex_trylock(pthread_mutex_t *mutex);
+       int pthread_mutex_unlock(pthread_mutex_t *mutex);
+
+
+  -- Condition Variables --
+
+    The condition variable mechanism allows threads to suspend
+  execution and relinquish the processor until some condition
+  is true. 
+
+  Creating/Destroying:
+  * pthread_cond_init
+  * pthread_cond_t cond = PTHREAD_COND_INITIALIZER;
+  * pthread_cond_destroy
+
+  Waiting on condition:
+  * pthread_cond_wait 
+    unlocks the mutex and waits for the condition variable
+    cond to be signaled.
+  * pthread_cond_timedwait
+    place limit on how long it will block.
+
+  Waking thread based on condition:
+  * pthread_cond_signal
+    restarts one of the threads that are waiting on the 
+    condition variable cond.
+  * pthread_cond_broadcast
+    wake up all threads blocked by the specified condition 
+    variable.
+
+=======================================================
+
+
+==== LAB 9 GETTING STARTED ============================
+
+  -- Laboratory Setup --
+
+  ~~Ubuntu~~
+    Download and make coreutils 8.6
+    Add the src folder to PATH
+    Run the benchmark test
+      $time -p sort -g --parallel=1 < input > /dev/null
+
+  ~~SEAS~~
+    Use the sort version in /usr/local/cs/bin
+    Swith to bash shell first
+      $bash
+    Add /usr/local/cs/bin to PATH
+      $export PATH="/usr/local/cs/bin:$PATH"
+
+  ~~Generate Input File~~
+    Use od to generate 200000 random float numbers
+      $od -t f -N 1600000 < /dev/urandom > od.txt
+    Use sed or other text processing tools to separate
+    each number in one line
+      Review what we have covered in lab2!!
+
+  -- Homework --
+    * Understanding the problem
+    * Target the routine which you want to parallelize
+    * Use POSIX Pthread API
+    * You don't need to consider synchronizing problems
+
+=======================================================
+
+
+==== REFERENCES =======================================
+
+  POSIX Threads Programming
+  https://computing.llnl.gov/tutorials/pthreads/
+
+  POSIX thread (pthread) libraries
+  http://www.yolinux.com/TUTORIALS/LinuxTutorialPosixThreads.html
+
+  Introduction to Programming Threads
+  http://www.mit.edu/people/proven/IAP_2000/index.html
+
+=======================================================
