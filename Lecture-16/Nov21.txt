@@ -57,6 +57,12 @@
     * Each thread is equally independent (and
       dependent)
 
+
+
+
+
+
+
   -- Single Thread Application --
 
   ------------------------------------------
@@ -189,7 +195,7 @@
 
   -- Joins --
 
-    Join is performed whe none wants to want for a thread to
+    Join is performed when one wants to wait for a thread to
   finish. If you need a "checkpoint" for your multithread
   program to converge and synchronize with each other, use
   join mechanism.
