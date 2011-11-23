@@ -1,0 +1,200 @@
+   -------------------------------------------------
+   |       CS 35L SOFTWARE CONSTRUCTION LAB        |
+   |           Parallel Programming                |
+   |            November 21, 2011                  |
+   -------------------------------------------------
+
+=== AGENDA ============================================
+
+  1 POSIX Thread Example
+  2 Introduction to MapReduce Framework
+
+=======================================================
+
+====  POSIX THREAD EXAMPLE  ===========================
+
+  -- A Real Problem --
+    We want to count the frequency of word "he" and "she" in
+  Jane Austen's novels.
+
+   * Single thread approach:
+      - Read one novel after another
+      - Find out each word
+      - If the word is "he" or "she", increment the
+        corresponding counter by 1.
+      - Output the answer at the end.
+
+   * Multithread approach:
+      - Create each thread for each novel
+      - Wait for every thread finishing
+      - Output the results
+
+
+  -- Argument Passing --
+
+  (1) Simply passing a value
+
+    int thread_args[NUM_THREADS];
+    ...
+    for(int i = 0; i < NUM_THREADS; i++)
+        pthread_create(&threads[i], NULL, 
+            my_function, (void*) &thread_args[i]);
+    ...
+
+    void* pthread_create(void* arg)
+    {
+        int a = *((int*) arg);
+        ...
+    }
+
+  (2) Use a struct to pass values
+
+    typedef struct thread_data {
+        int count_he;
+        int count_she;
+        char* filename;
+    } thread_data_t;
+
+
+    // in main()
+
+    for(i = 0; i < NUM_OF_NOVELS; i++) {
+        thread_data_arr[i].count_he = 0;
+        thread_data_arr[i].count_she = 0;
+        thread_data_arr[i].filename = filenames[i];
+    }
+
+    for(i = 0; i < NUM_OF_NOVELS;i++) {
+        rc = pthread_create(&threads[i], NULL, 
+                count_in_a_novel, 
+                (void*) &thread_data_arr[i] );
+        if(rc != 0) {
+            perror("Failed to create a thread!");
+            exit(1);
+        }
+    }
+
+    // in count_in_a_novel()
+
+    thread_data_t *thread_data = (thread_data_t*) args;
+
+    //read the value of an argument
+    FILE *fp = fopen(thread_data->filename, "r");
+
+    ...
+
+    while(fgets(buffer, 1000, fp) != NULL) {
+        token = strtok_r(buffer, delimiters, &saveptr);
+        while(token != NULL) {
+            if(strcmp(token, "he") == 0 || strcmp(token, "He") == 0)
+                thread_data->count_he++; //write to the augument
+            else if (strcmp(token, "she") == 0 || strcmp(token, "She") == 0)
+                thread_data->count_she++; //write to the augument
+            token = strtok_r(NULL, delimiters, &saveptr);
+        }
+    }
+
+
+  -- Error Handling --
+
+    pthread_create and pthread_join will return 0 
+    if it successfully finishes.
+
+        rc = pthread_join(threads[i], (void*) &status);
+        if(rc != 0) {
+            perror("Failed to join a thread!");
+            exit(1);
+        }
+
+  -- Thread Safety --
+
+    * A piece of code is thread-safe if only manipulates
+      shared data structures in a thread-safe manner, which
+      enables the safe multithreading process.
+
+    Try to edit "wordcount.c", use strtok() instead of
+    strtok_r(). What will happen?
+
+    ~~ What is unsafe? ~~
+      - Accessing global variables or heap
+      - Allocating/Reallocating/Freeing resources that have
+        global scope
+      - Indirect access via pointers
+
+    Can you guess what's happening inside strtok()?
+
+    ~~ Strategy towards thread safety ~~
+      - Re-entrancy (saving the state information locally)
+      - Mutual exclusion
+      - Thread-local storage
+      - Atomic operations
+
+
+=======================================================
+
+
+==== INTRODUCTION TO MAPREDUCE FRAMEWORK ==============
+
+  -- MapReduce Framework --
+    * Introduced by Google in 2004
+    * Support distributed computing
+    * Enable processing huge datasets (peta-byte)
+    * Running on a cluster of machines (thousands of nodes)
+
+  -- Why MapReduce? --
+    * The size of web (zetabytes?)
+    * Indexing the whole web will take forever
+    * Indexing is parallelizable
+
+  -- Map & Reduce --
+                      <K,V>                   <K', V'>
+      |-----> Mapper------------> Reducer K ={a...i}
+      |-----> Mapper_______ _ /   Reducer K ={j...p}
+ Data |-----> Mapper         /\_> Reducer K ={q...z}
+      |-----> Mapper--------
+      |-----> Mapper
+
+    * Map Step
+      - Takes the input, partitions into smaller set.
+      - Send to each worker to process
+      - Worker output the results as <K, V> pairs
+
+     Map <K, V> -------> SortedList <K, List(V) >
+
+    * Reduce Step
+      - Collect <K, V> pairs, distributed to each worker
+        according to the value of K, data with same K value
+        will be distributed to the same worker
+      - Worker collect the <K, V> pairs, process them and
+        output <K', V'>
+
+      <K, List(V)> -----> List(<K', V'>)
+
+  -- Word Count revisited --
+
+    Say, we want to do the "word count" problem with
+  Map-Reduce framework.
+
+    ~~ Mapper ~~
+    * Input: <line no, lines>
+    * Output: <word, count>
+
+    ~~ Reducer ~~
+    * Input <word, count_list>
+    * Output: <word, sum(count_list)>
+
+    Count the frequency of query words in a 10 GB query log
+       - MapReduce: 2 min
+       - Singlethread: 4 hours
+
+  -- MapReduce in Industry --
+    * Google  - Inventors
+    * Yahoo   - Hadoop (the most popular open-source lib)
+    * Amazon  - Cloud computing
+    * Facebook
+    * eBay
+    * Microsoft
+        ...
+
+=======================================================
+
