@@ -1,0 +1,303 @@
+   -------------------------------------------------
+   |     CS 35L SOFTWARE CONSTRUCTION LAB          |
+   |         Security Basics and SSH               |
+   |            November 13, 2011                  |
+   -------------------------------------------------
+
+=== AGENDA ============================================
+
+  1 Common Security Threats
+  2 Security Technique Basics
+    2.1 Chain of trust
+    2.2 Firewalls, kernels and sandboxes
+    2.3 Intrusion detection
+    2.4 Security Policies
+  3 Introduction to SSH
+
+=======================================================
+
+=== COMMON SECURITY THREATS ===========================
+
+---- Categorization of Security Threats----------------
+
+  Interruption
+    - Prevents source from sending information to the
+      receivers or receiver from sending requests to
+      the source
+    - Threat to availability
+
+  Interception
+    - Data or services are provided to an unauthorized
+      party
+    - Threat to secracy and exclusivity
+
+  Modification
+    - Unauthorized parties modify the data either on
+      the way to the users or permanently at the server
+    - Threat to integrity
+
+  Fabrication
+    - Unauthorized parties insert counterfeit objects
+      to the system causing improper changes in data
+    - Threat to integrity and exclusivity
+
+  Destruction
+    - Destroy data, hardware, messages or software
+    - Which is easier? To destroy or to modify?
+
+-------------------------------------------------------
+
+
+---- Eavesdropping ------------------------------------
+    Eavesdropping is the act of secretly listening to
+  the private conversation of others without their
+  consent.
+
+    Eavesdropping in computer software:
+    * Trojan horses
+    * Man-in-the-middle attack
+
+    Counter measures:
+    * Public key infrastructures
+    * Mutual authentication
+
+-------------------------------------------------------
+
+
+---- Denial of Service Attack -------------------------
+
+    The Denial of Service (DoS) attack is focused on
+  making unavailable a resource (site, application,
+  server) for the purpose it was designed.
+    If a service receives a very large number of
+  requests, it may stop providing service to legitimate
+  users.
+
+  ~~ Examples of DoS Attack ~~
+    Consider the following Java code:
+
+-- Ex 1 --
+
+public class MyServlet extends ActionServlet {
+   public void doPost(HttpServletRequest request, 
+                      HttpServletResponse response)
+          throws ServletException, IOException {
+          . . . 
+          String [] values = request.getParameterValues("CheckboxField");
+      // Process the data without length check for reasonable range – wrong!
+          for ( int i=0; i<values.length; i++) {
+                // lots of logic to process the request
+         }
+         . . . 
+   }
+    . . . 
+}
+    
+
+-- Ex 2 --
+
+public class AccountDAO {
+    //...
+    public void createAccount(AccountInfo acct)  
+                 throws AcctCreationException {
+       //...
+           try {
+            //Create a database connection
+            Connection conn = DAOFactory.getConnection();
+            CallableStatement  calStmt = conn.prepareCall(…);
+            //...	
+           calStmt.executeUpdate();
+           calStmt.close();
+          conn.close();
+       }  catch (java.sql.SQLException e) {
+            throw AcctCreationException (...);
+            // If exception occurs, dabatase connection
+            // still holds! Wrong!
+       }
+    }
+}
+
+  ~~ Counter Measures ~~
+    * Validate Input!!
+    * Manage resources carefully.
+
+-------------------------------------------------------
+
+
+---- Injection Attack ---------------------------------
+
+  ~~ SQL Injection ~~
+
+    SQL is a programming language to retrieve and
+  modify data stored in data base. 
+    In Web applications,
+  usually the logic will be programmed in a language
+  (e.g. Java) and construct a SQL statement to access
+  databases.
+
+  Consider the following code:
+
+  string userName = ctx.getAuthenticatedUserName();
+	string query = "SELECT * FROM items WHERE owner = "'" 
+					+ userName + "' AND itemname = '"  
+					+ ItemName.Text + "'";
+	sda = new SqlDataAdapter(query, conn);
+	DataTable dt = new DataTable();
+	sda.Fill(dt);
+
+  This query intends to execute:
+  SELECT * FROM items
+	WHERE owner = XXX
+	AND itemname = YYY;
+  
+  What if we replace YYY with 'YYY OR 1=1'?
+
+  ~~ Cross-site Scripting ~~
+
+    Execute script is extremely easy in HTML. Consider:
+    <b onmouseover=alert('hello!')> Click Me! </b>
+
+    Error Page Example
+
+  <html>
+  <body>
+
+  <? php
+  print "Not found: " . urldecode($_SERVER["REQUEST_URI"]);
+  ?>
+
+  </body>
+  </html>
+
+    This error page will take the URI and prompt to
+  users the URI is not found.
+
+    What if we use a URI contains a script?
+
+-------------------------------------------------------
+
+=======================================================
+
+
+
+==== SECURITY TECHNIQUES BASICS =======================
+
+  -- Chain of Trust --
+  * Only allow accessing / executing signed features
+  * Bottom-up: from hardware to final software
+  * If part of chain is unsigned, then its previous
+    components will not execute it
+
+  -- Firewalls --
+  * Permit or deny network transmissions based upon a
+    set of rules
+  * Network layer / application layer
+
+  -- Kernels --
+  * Kernel will be protected all the time
+  * Recall the system call mechanism
+
+  -- Sandbox --
+  * Separating running programs
+  * Applets running in a virtual machine
+  * Browser should keep scripts running in the sandbox
+
+  -- Intrusion Detection --
+  * Detect abnormal behaviors
+  * Mining system logs
+  * Extension: bots detection in social networks
+
+=======================================================
+
+
+==== INTRODUCTION TO SSH ==============================
+
+  -- Telnet vs SSH --
+  
+  Telnet:
+            Sending Unencrypted Data
+   Client -------------------------------> Server
+            Username / Password
+
+
+  SSH:
+            Sending Encrypted Data
+   Client -------------------------------> Server
+            cx73@?1= / jJp12;Yt
+
+
+  -- Public and Private Keys --
+
+  Private key: user's identity for outbound SSH
+              connections.
+  Public key: represents who you will allow inbound
+              access
+
+  Private key is the ID-card, while public key is the
+  gate card-reader.
+
+  -- Manage SSH key pairs --
+
+  ssh-keygen -t rsa
+
+  secret phrase: a password for the SSH key.
+
+  .ssh/id_rsa     (private key)
+  .ssh/id_rsa.pub (public key)
+
+  .ssh/authorized_keys2
+    This file stores authorized pubkeys from client
+  machines. Append other's pubkey to this file can
+  authorize access without typing passwords.
+
+  You should guarantee that ssh keys cannot be access
+  by others. Set proper access permissions for the above
+  files.
+
+  -- Common use of SSH --
+
+  * Remote host shell access
+    ssh login@remote
+
+  * Execute a single command on a remote host
+    ssh login@remote 'command'
+
+  * Port forwarding
+    - Local forwarding: forward all traffic to local
+      port towards a remote server
+    ssh -L <local port>:serverA:<remote port> serverB
+
+    Example: access machine inside a internal network
+
+    home --> department server --> lab machine
+
+    ssh -L 2222:lab:22 login@department
+
+  * Forwarding X sessions
+    ssh -X login@remote
+
+=======================================================
+
+
+==== GETTING STARTED: LAB 8 ===========================
+
+  -- Splitting into pairs --
+    * One machine as SSH server
+    * The other as SSH client
+
+  -- Set up the server --
+    * Install OpenSSH on the server
+    * Test if it is working
+      ssh localhost
+
+  -- Setup a passwordless authentication --
+    * Generate ssh key pairs on client side
+      ssh-keygen
+    * Copy the ssh public key to server
+    * On the server, append client public key to
+      .ssh/authorized_keys2
+    * Set proper access permission for keys
+
+  -- Forwarding X sessions from remote server --
+
+=======================================================

@@ -1,0 +1,122 @@
+   -------------------------------------------------
+   |     CS 35L SOFTWARE CONSTRUCTION LAB          |
+   |         Security Basics and SSH               |
+   |            November 13, 2011                  |
+   -------------------------------------------------
+
+=== AGENDA ============================================
+
+ 1 Public Key Cryptography Revisited
+ 2 Authentication
+
+=======================================================
+
+
+
+==== PUBLIC KEY CRYPTOGRAPHY ==========================
+
+  -- Assymetric key cryptograph --
+    * Generate a pair of keys: public key and private key
+    * Neither key can be derived from knowledge of each other
+  
+  -- Public key --
+    * Distributed
+
+  -- Private Key --
+    * Known only to the owner (recipient)
+
+  -- Encryption --
+    * Sender encrypt the message using the public key of the recipient
+    * The message can only be decrypted with the private key of the recipient
+
+  -- Digital Signature --
+    * Sender sign the message with sender's private key
+    * The recipient verify the signature with sender's public key
+
+  -- Weakness --
+    * Brutal force attack
+    * Some schema (e.g. RSA) have known attacks much faster than BF
+    * Solution: to make the attack infeasible given current computation resource
+
+========================================================
+
+
+==== Authentication ====================================
+
+  -- Authorization --
+    * Specifying access right to resources.
+  -- Authentication --
+    * The act of confirming the identification
+
+  -- Authentication for Web Apps --
+    * Allow twitter to post on Facebook page (or vice versa)
+    * Use a third-party login rather than creating a new account
+    * Allow off-line access to apps
+
+  -- How to achieve those --
+    * Share password among mulitple Apps?
+
+  -- OAuth --
+    * Add one authorization layer
+    * The client requests access to resource controlled by resource owner on a
+      resource server
+    * Access token: a string denoting a specific scope, lifetime, and other
+      attributes
+
+   OAuth defines four roles:
+
+   resource owner
+      An entity capable of granting access to a protected resource (e.g.
+      end-user).
+   resource server
+      The server hosting the protected resources, capable of accepting
+      and responding to protected resource requests using access tokens.
+   client
+      An application making protected resource requests on behalf of the
+      resource owner and with its authorization.
+   authorization server
+      The server issuing access tokens to the client after successfully
+      authenticating the resource owner and obtaining authorization.
+
+
+     +--------+                               +---------------+
+     |        |--(A)- Authorization Request ->|   Resource    |
+     |        |                               |     Owner     |
+     |        |<-(B)-- Authorization Grant ---|               |
+     |        |                               +---------------+
+     |        |
+     |        |                               +---------------+
+     |        |--(C)-- Authorization Grant -->| Authorization |
+     | Client |                               |     Server    |
+     |        |<-(D)----- Access Token -------|               |
+     |        |                               +---------------+
+     |        |
+     |        |                               +---------------+
+     |        |--(E)----- Access Token ------>|    Resource   |
+     |        |                               |     Server    |
+     |        |<-(F)--- Protected Resource ---|               |
+     +--------+                               +---------------+
+
+
+                     Figure 1: Abstract Protocol Flow
+
+   (A)  The client requests authorization from the resource owner.  The
+        authorization request can be made directly to the resource owner
+        (as shown), or preferably indirectly via the authorization
+        server as an intermediary.
+   (B)  The client receives an authorization grant which is a credential
+        representing the resource owner's authorization, expressed using
+        a grant type.  The authorization grant type depend on the method
+        used by the client to request authorization and the types
+        supported by the authorization server.
+   (C)  The client requests an access token by authenticating with the
+        authorization server and presenting the authorization grant.
+   (D)  The authorization server authenticates the client and validates
+        the authorization grant, and if valid issues an access token.
+   (E)  The client requests the protected resource from the resource
+        server and authenticates by presenting the access token.
+   (F)  The resource server validates the access token, and if valid,
+        serves the request.
+
+
+========================================================
