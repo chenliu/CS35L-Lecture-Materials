@@ -1,3 +1,6 @@
+Download the notes and examples:
+http://cs.ucla.edu/~chenliu/cs35l/lecture17/
+
    -------------------------------------------------
    |       CS 35L SOFTWARE CONSTRUCTION LAB        |
    |           Parallel Programming                |
@@ -41,7 +44,7 @@
             my_function, (void*) &thread_args[i]);
     ...
 
-    void* pthread_create(void* arg)
+    void* my_function(void* arg)
     {
         int a = *((int*) arg);
         ...
@@ -195,6 +198,16 @@
     * eBay
     * Microsoft
         ...
+
+  -- Further Reading --
+    * Hadoop MapReduce Tutorial
+    http://hadoop.apache.org/common/docs/current/mapred_tutorial.html
+
+    * Yahoo! Hadoop Tutorial
+    http://developer.yahoo.com/hadoop/tutorial/
+
+    * Hadoop: the Definitive Guide, Second Edition
+    http://proquest.safaribooksonline.com/book/databases/hadoop/9781449398644
 
 =======================================================
 

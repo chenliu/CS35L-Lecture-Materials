@@ -17,10 +17,8 @@ void* count_in_a_novel(void* args);
 int main()
 {
     pthread_t threads[NUM_OF_NOVELS];
-    int counts[NUM_OF_NOVELS];
-    int retval[NUM_OF_NOVELS];
-    long status;
     pthread_attr_t attr;
+    long status;
     char *filenames[] = {"emma.txt", "mansfield-park.txt",
         "northanger-abbey.txt", "persuasion.txt", "pride-and-prejudice.txt",
         "sense-and-sensibility.txt" };
@@ -82,13 +80,15 @@ void* count_in_a_novel(void* args)
 
 
     while(fgets(buffer, 1000, fp) != NULL) {
-        token = strtok_r(buffer, delimiters, &saveptr);
+        token = strtok(buffer, delimiters);
+        //token = strtok_r(buffer, delimiters, &saveptr);
         while(token != NULL) {
             if(strcmp(token, "he") == 0 || strcmp(token, "He") == 0)
                 thread_data->count_he++;
             else if (strcmp(token, "she") == 0 || strcmp(token, "She") == 0)
                 thread_data->count_she++;
-            token = strtok_r(NULL, delimiters, &saveptr);
+            token = strtok(NULL, delimiters);
+            //token = strtok_r(NULL, delimiters, &saveptr);
         }
     }
     if(ferror(fp)) {

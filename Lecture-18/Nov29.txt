@@ -1,0 +1,184 @@
+   -------------------------------------------------
+   |       CS 35L SOFTWARE CONSTRUCTION LAB        |
+   |           Parallel Programming                |
+   |            November 23, 2011                  |
+   -------------------------------------------------
+
+=== AGENDA ============================================
+
+   1 Computer Science Research
+   2 Skills You Should Have Learnt From This Class
+   3 Choose Your Career Path as an Engineer
+
+=======================================================
+
+
+== Computer Science Research ==========================
+
+  -- Research fields --
+   Artificial Intelligence and Machine Learning
+   Computer Architecture and Embeded Systems
+   Database and Information Retrieval
+   Graphs and Computer Vision
+   Networks
+   Programming Language
+   System Design
+   Theory
+   and more...
+
+  -- Cross-Disciplinary Research --
+   Bioinformatics
+   Computing Social Science
+   Numeric Computation in Maths
+   Statistics
+
+  -- How does research impact the world? --
+   You should be proud of UCLA.
+   * Internet
+   * Bayesian Networks
+
+  -- Academic Research --
+   "Publish or perish"
+   Usually tackle a more general problem
+   Want a well-defined problem
+   The research product is free for the public
+
+  -- Industrial Research --
+   Looking at real problems
+   Aiming at creating better products
+   Patent: the core competive power
+
+  -- How to start your own research? --
+   * Find an interesting topic (or topics)
+   * Talk to researchers (faculties, graduate students)
+   * Read papers
+   * Hands on real research projects
+   * Collaboration
+
+=======================================================
+
+
+== Skills you should have learnt from this class ======
+
+  -- Learning quickly --
+    * New tools
+    * New programming language
+    * New developing envrionment
+
+    Key: Finding the similar pattern in different learning
+         process and applying them in future learning.
+
+  -- Solving problems individually --
+    * No labs are trivial
+    * Others may not necessarily share the same problems
+    * Helps are not always available
+
+    Key: Identifying the problem. Dividing and conquer.
+
+  -- Communicating effectively --
+    * All the classmates work on the same problem
+    * How much help have you got from your classmates / 
+      offered to your classmates
+    * You will learn more when you are trying to teach others
+
+    Key: State the problem clearly. Explain the problem
+         step by step.
+
+  -- Logging and documenting --
+    * What are the most useful online resources for 'how-to'?
+    * Keep notes for yourself but also for others
+
+========================================================
+
+
+== Career Path as an Engineer ==========================
+
+  There are many different types of engineers
+    * A technique guru
+    * A good group leader
+    * An inspiring mentor
+    * A genius inventor
+    * An adventurer
+    * A solid performer
+    * A careful keeper
+
+  Identify your personality an match yourself to one of them.
+
+  A roughly division of engineering roles in IT companies
+    * Developer
+        - BS, MS or PhD.
+        - Build the product.
+        - Effective and efficient execution
+        - Quick learner
+        - Team player
+        - Adaptable
+    * Researcher
+        - MS or PhD
+        - Vision of the product
+        - Solving difficult problems
+        - Individually working ability
+        - Conversion
+    * Technical Manager
+        - Good interaction skills
+        - Responsibility
+        - Team player
+        - Great planning
+
+  Some common quality
+    * Passion
+    * Endurance
+    * Creativity
+
+  -- Should I go to Grad School? --
+
+  It is stupid to think that going to graduate school or not
+  will affect your future career significantly while the 
+  most successful guys in the industry don't even have a Bachelor
+  degree.
+
+  But, you have to make a choice.
+
+  Grad school means
+    * More training
+    * Less competitive
+    * More working
+    * Less pay (maybe more in the future, maybe...)
+
+  Your decision should base on
+    * Your goal (want a concrete contribution? want more advanced roles? 
+      have a specific intersts?)
+    * Your self estimation (are you ready?)
+    * Your opportunity
+
+  PhD vs Master
+    * PhD is a lot harder
+    * Longer time to suffer
+    * Requires more creativity, knowledge and endurance
+    * Better organizing your time and effort
+
+  Why there are so many PhD working Google as an software engineer?
+    * Academic position is unavailable
+    * More impact on industry
+    * Real problem is always fascinating
+
+  -- Should I join a big company or a start-up? --
+
+  Working in a start-up
+    * Uncertainty and flexibility
+    * Challenging
+    * Much low-level work
+    * Better gain when success
+
+  Working in a big company (esp. industry leaders)
+    * Working with the greatest engineers
+    * Working under a matual framework
+    * Your company impacts the world, but maybe not you
+    * More difficult to get promotion
+
+  -- Plan early --
+    * Get an internship
+    * Looking for a specific interests
+    * Mastering one while knowing others
+    * Be prepared and be flexible
+
+===========================================================
