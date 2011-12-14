@@ -1,0 +1,91 @@
+Final Examination Date: Dec 8, 2011, 11:30AM - 2:30PM
+All assignments due: Dec 2, 2011, 23:59PM
+
+
+   -------------------------------------------------
+   |       CS 35L SOFTWARE CONSTRUCTION LAB        |
+   |               Course Review                   |
+   |            November 30, 2011                  |
+   -------------------------------------------------
+
+Week 1 INTRODUCTION, FILES, EDITING
+
+  * Unix file system
+  * Unix commands
+  * Documentation usages
+
+Week 2 COMMANDS AND BASIC SCRIPTING
+
+  * Regular expressions
+  * Pipeline and redirection
+  * Writing short scripts
+  * Processing text with shell commands
+
+Week 3 MORE SCRIPTING, VMs, CONSTRUCTION TOOLS
+
+  * Python Scripting
+  * Understanding the build process
+
+Week 4 CHANGE MANAGEMENT 
+
+  * Diff and patch command
+  * Understanding the Makefile
+  * Git commands and understanding the developing process
+
+Week 5 Low-level construction and debugging
+
+  * C programming
+  * Understanding the debugging process
+
+Week 6 System Programming
+
+  * C programmming
+  * Idea of system calls
+
+Week 7 Faults, failures, errors and holes
+
+  * Identifying ecurity holes in programming
+  * Stack overflow attack
+
+Week 8 Security Basics
+
+  * Threads
+  * Encrytion methods
+
+Week 9 Parallelism
+
+  * Write multithreading programs (pthread)
+
+-- The exam will have --
+  * 4 Problems
+  * 13 Subproblems
+    - Subproblems under the same problem are related
+      but not necessarily dependent
+  * The problem can be a real life software constructing
+    scenario. You need to understand the problems first.
+
+-- The exam will focus on --
+  * Understanding of important ideas
+  * Analyze the problem
+  * Utilize learned tools to complete specific task
+  * Reasoning of using different tools
+  * Testing your understanding of the techniques you used to 
+    solve the assignments
+
+-- You will not be able to complete the exam by --
+  * Copying and pasting notes without thinking
+  * Memorizing all the assignments 
+
+-- In order to prepare, you should --
+  * Be able to understand all lecture notes without difficulties.
+  * Be able to write code similar to what you have written
+    for assignments.
+  * Be able to use simple commands / programing language / tools
+    without heavy documentations.
+
+-- Suggestions --
+  * Write up a cheat sheet
+  * Manage your time wisely
+  * Don't rush to answers, solve the problem step by step
+  * Provide a big picture if you cannot completely solve the problem
+  * Pay attention to minor details to get a perfect answer

@@ -1,7 +1,14 @@
+Final Examination Date: Dec 8, 2011, 11:30AM - 2:30PM
+All assignments due: Dec 2, 2011, 23:59PM
+Grades will be curved based on the whole CS 35L
+Next lecture: review for final exams
+Evaluation form
+
+
    -------------------------------------------------
    |       CS 35L SOFTWARE CONSTRUCTION LAB        |
-   |           Parallel Programming                |
-   |            November 23, 2011                  |
+   |      Computer Science Research and Career     |
+   |            November 28, 2011                  |
    -------------------------------------------------
 
 === AGENDA ============================================
@@ -9,6 +16,7 @@
    1 Computer Science Research
    2 Skills You Should Have Learnt From This Class
    3 Choose Your Career Path as an Engineer
+   4 Assignment 10
 
 =======================================================
 
@@ -180,5 +188,17 @@
     * Looking for a specific interests
     * Mastering one while knowing others
     * Be prepared and be flexible
+
+===========================================================
+
+=== Assignment 10 =========================================
+
+  Write a review on one of the stories in recent ACM TechNews.
+
+  Your review should include:
+  1 Summary of the story
+  2 Your opinion/discover/insight of the story
+  3 Mention related work (a scientific paper) to support your
+    own argument
 
 ===========================================================
